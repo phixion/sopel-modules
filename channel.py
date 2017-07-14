@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+#encoding: utf-8
 '''
 channelmodule for #pony.ql
 '''
@@ -10,15 +12,15 @@ import urllib.request as urllib2
 '''import urllib2'''
 import random
 
-shrugs = ["乁( ⁰͡ Ĺ̯ ⁰͡ ) ㄏ",
-          "¯\_(ツ)_/¯",
-          "¯\(º_o)/¯",
-          "┐(ツ)┌",
-          "¯\_( ͠° ͟ʖ °͠ )_/¯",
-          "ʅ(°_°)ʃ",
-          "┐(°,ʖ°)┌",
-          "¯\_(⌣̯̀ ⌣́)_/¯",
-          "¯\_(°ᴥ°)_/¯"]
+shrugs = [u"乁( ⁰͡ Ĺ̯ ⁰͡ ) ㄏ",
+          u"¯\_(ツ)_/¯",
+          u"¯\(º_o)/¯",
+          u"┐(ツ)┌",
+          u"¯\_( ͠° ͟ʖ °͠ )_/¯",
+          u"ʅ(°_°)ʃ",
+          u"┐(°,ʖ°)┌",
+          u"¯\_(⌣̯̀ ⌣́)_/¯",
+          u"¯\_(°ᴥ°)_/¯"]
 
 @sopel.module.commands('quakecon')
 def quakecon(bot, trigger):
@@ -36,7 +38,7 @@ def quakecon(bot, trigger):
 @sopel.module.commands('blizzcon')
 def blizzcon(bot, trigger):
    now = datetime.datetime.now()
-   target = datetime.datetime(2016, 11, 4, 0)
+   target = datetime.datetime(2017, 11, 3, 0)
    delta = target - now
    if delta.days < 7:
       hours, remainder = divmod(delta.seconds, 3600)
@@ -49,10 +51,6 @@ def blizzcon(bot, trigger):
 @sopel.module.commands('zen')
 def zen(bot, trigger):
    bot.say(requests.get("https://api.github.com/zen").text)
-
-@sopel.module.commands('whatgameisthayacurrentlyplaying')
-def whatgameisthayacurrentlyplaying(bot, trigger):
-   bot.say("banned.")
 
 @sopel.module.commands('nfact')
 def nfact(bot, trigger):
@@ -102,6 +100,18 @@ def kadse(bot, trigger):
   pick = choice(requests.get("http://www.reddit.com/r/catgifs.json?limit=100", headers=header).json()["data"]["children"])["data"]
   bot.say("%s" % (pick["url"]))
 
+@sopel.module.commands('livestreamfail', 'lsf', 'fail')
+def lsf(bot, trigger):
+  header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
+  pick = choice(requests.get("http://www.reddit.com/r/LiveStreamFail.json?limit=100", headers=header).json()["data"]["children"])["data"]
+  bot.say("%s" % (pick["url"]))
+
+@sopel.module.commands('aw', 'aww')
+def aww(bot, trigger):
+  header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
+  pick = choice(requests.get("http://www.reddit.com/r/aww.json?limit=100", headers=header).json()["data"]["children"])["data"]
+  bot.say("%s" % (pick["url"]))
+
 @sopel.module.commands('newbeat','latest')
 def newbeat(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
@@ -119,25 +129,34 @@ def rather(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
   bot.say(choice(requests.get("http://www.reddit.com/r/wouldyourather.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"])
 
+#@sopel.module.commands('youporn', 'yp')
+#def youporn(bot, trigger):
+#  foundComment = False
+#  opener = urllib2.build_opener()
+#  opener.addheaders.append(('Cookie', 'age_verified=1'))
+#
+#  for x in range(7):
+#    f = opener.open("http://www.youporn.com/random/video/")
+#    htmlSource = f.read()
+#    f.close()
+#    comments = re.findall(b'<div class="commentContent">((?:.|\\n)*?)</p>', htmlSource)
+#    if len(comments) == 0:
+#        continue
+#    randomcomment = random.choice(comments).replace(b"<p>", b"")
+#    bot.say(randomcomment, max_messages=2)
+#    foundComment = True
+#    break
+#  if not foundComment:
+#    bot.say("No comment found, please retry")
+
 @sopel.module.commands('youporn', 'yp')
 def youporn(bot, trigger):
-  foundComment = False
   opener = urllib2.build_opener()
-  opener.addheaders.append(('Cookie', 'age_verified=1'))
-
-  for x in range(7):
-    f = opener.open("http://www.youporn.com/random/video/")
-    htmlSource = f.read()
-    f.close()
-    comments = re.findall(b'<div class="commentContent">((?:.|\\n)*?)</p>', htmlSource)
-    if len(comments) == 0:
-        continue
-    randomcomment = random.choice(comments).replace(b"<p>", b"")
-    bot.say(randomcomment, max_messages=2)
-    foundComment = True
-    break
-  if not foundComment:
-    bot.say("No comment found, please retry")
+  f = opener.open("https://porncomment.com")
+  htmlSource = f.readlines()
+  f.close()
+  randomcomment = htmlSource [31]
+  bot.say(randomcomment, max_messages=2)
 
 @sopel.module.commands('jpg','jpeg')
 def jpg(bot, trigger):
@@ -183,7 +202,7 @@ def wowalert(bot, trigger):
 
 @sopel.module.commands("free")
 def free_software(bot, trigger):
-  bot.say("https://ph.ixx.io/n/free_software.gif")
+  bot.say("https://p.hs.vc/u/free_software.gif")
 
 @sopel.module.commands("hackes")
 def hackes(bot, trigger):
@@ -196,3 +215,17 @@ def hackes2(bot, trigger):
 @sopel.module.commands("shrug")
 def rand_shrug(bot, trigger):
    bot.say(u"%s" % (choice(shrugs)))
+
+@sopel.module.commands("floss")
+def floss(bot, trigger):
+  bot.say("http://cal.guckes.net/")
+
+@sopel.module.commands("invasion","invasions")
+def invasion(bot, trigger):
+  bot.say("https://wow.gameinfo.io/invasions")
+
+@sopel.module.commands('doom')
+def rather(bot, trigger):
+  header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
+  bot.say(choice(requests.get("http://www.reddit.com/r/MFDOOM_txt.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"])
+

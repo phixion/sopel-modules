@@ -9,7 +9,7 @@ def addquote(bot, trigger):
         f = open(qdb, 'a')
         f.write("\n%s" % quote)
         f.close()
-        bot.reply('Added it...')
+        bot.reply('quote added boiiii')
 
 @module.commands('quote')
 @module.example('.quote')

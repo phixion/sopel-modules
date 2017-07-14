@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 import sopel
 
+#github.com/afengg
+# module that parses hotslogs.com for a specified hero's most popular talent of each tier and outputs a talent build
 # if a > b, return 1. else return 0
 def comparePercentages(a, b):
   a = 1 if (float(a[:-2]) > float(b[:-2])) else 0

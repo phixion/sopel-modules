@@ -3,7 +3,7 @@ import sopel
 
 @sopel.module.commands('pushbullet','pb','alarm','push')
 def pushbullet(bot, trigger):
-    if trigger.nick == 'NICK_GOES_HERE' or trigger.nick == 'NICK_GOES_HERE':
+    if trigger.nick == 'Phixion' or trigger.nick == 'vespertine':
         url = trigger.group(2)
-        pb = Pushbullet('API_KEY_GOES_HERE')
+        pb = Pushbullet('YOUR_API_KEY)
         pb.push_link(url,url)
