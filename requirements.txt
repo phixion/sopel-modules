@@ -9,3 +9,5 @@ redis
 lxml
 google-api-python-client
 apiclient
+beautifulsoup4
+markovify

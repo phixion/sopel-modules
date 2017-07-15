@@ -6,7 +6,7 @@
 Requirements:
 
 * [Sopel 6.x](https://github.com/sopel-irc/sopel/)
-* [Python 3.5 / 2.7](https://www.python.org/)
+* [Python 3.5](https://www.python.org/)
 
 Contents:
 

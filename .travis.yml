@@ -1,12 +1,11 @@
 language: python
 python:
-  - '2.7'
   - '3.5'
 services:
   - redis-server
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y -o Dpkg::Options::=--force-confnew python python-dev python-pip redis-server build-essential libevent-dev libenchant-dev
+  - sudo apt-get install -y -o Dpkg::Options::=--force-confnew python python-dev python-pip redis-server build-essential libevent-dev libenchant-dev ircd-irc2
 install: "pip install -r requirements.txt -r dev-requirements.txt pytest pytest-cov mock codeclimate-test-reporter"
 before_script: 
   - mkdir -p ~/.sopel/modules
@@ -17,3 +16,4 @@ before_script:
 script: sopel -d && sleep 60 && sopel -q
 after_script: 
   - cat ~/.sopel/logs/*.log
+  
