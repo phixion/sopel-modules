@@ -16,4 +16,4 @@ before_script:
   - sed -i 's/redis_host =.*/redis_host = 127.0.0.1/g' ~/.sopel/default.cfg
 script: sopel -d && sopel -q
 after_script: 
-  - cat /tmp/web.log
+  - cat ~/.sopel/logs/*.log
