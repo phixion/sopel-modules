@@ -1,7 +1,7 @@
 from sopel import *
 import random
 
-qdb = "/home/bot/.willie/quote.db"
+qdb = "~/.sopel/quote.db"
 
 @module.commands('addquote')
 def addquote(bot, trigger):
@@ -9,7 +9,7 @@ def addquote(bot, trigger):
         f = open(qdb, 'a')
         f.write("\n%s" % quote)
         f.close()
-        bot.reply('quote added boiiii')
+        bot.reply('Your quote has been added!')
 
 @module.commands('quote')
 @module.example('.quote')

@@ -1,15 +1,12 @@
 #!/usr/bin/python3
 #encoding: utf-8
-'''
-channelmodule for #pony.ql
-'''
+
 import sopel
 from random import choice
 import datetime
 import requests
 import re
 import urllib.request as urllib2
-'''import urllib2'''
 import random
 
 shrugs = [u"乁( ⁰͡ Ĺ̯ ⁰͡ ) ㄏ",
@@ -82,19 +79,13 @@ def fifty(bot, trigger):
   pick = choice(requests.get("http://www.reddit.com/r/fiftyfifty.json?limit=100", headers=header).json()["data"]["children"])["data"]
   bot.say("%s - %s" % (pick["title"], pick["url"]))
 
-@sopel.module.commands('til')
+@sopel.module.commands('til', 'todayilearned')
 def til(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
   pick = choice(requests.get("http://www.reddit.com/r/todayilearned.json?limit=100", headers=header).json()["data"]["children"])["data"]
   bot.say("%s" % (pick["title"]))
 
-@sopel.module.commands('beat')
-def beat(bot, trigger):
-  header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
-  pick = choice(requests.get("http://www.reddit.com/r/beatheads.json?limit=100", headers=header).json()["data"]["children"])["data"]
-  bot.say("%s" % (pick["url"]))
-
-@sopel.module.commands('kadse', 'kazachstan', 'c@')
+@sopel.module.commands('kadse', 'kazachstan', 'c@', 'cat')
 def kadse(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
   pick = choice(requests.get("http://www.reddit.com/r/catgifs.json?limit=100", headers=header).json()["data"]["children"])["data"]
@@ -118,6 +109,12 @@ def newbeat(bot, trigger):
   pick = choice(requests.get("http://www.reddit.com/r/beatheads/new.json?limit=1", headers=header).json()["data"]["children"])["data"]
   bot.say("%s" % (pick["url"]))
 
+@sopel.module.commands('beat')
+def beat(bot, trigger):
+  header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
+  pick = choice(requests.get("http://www.reddit.com/r/beatheads.json?limit=100", headers=header).json()["data"]["children"])["data"]
+  bot.say("%s" % (pick["url"]))
+
 @sopel.module.commands('tifu')
 def tifu(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
@@ -128,26 +125,6 @@ def tifu(bot, trigger):
 def rather(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
   bot.say(choice(requests.get("http://www.reddit.com/r/wouldyourather.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"])
-
-#@sopel.module.commands('youporn', 'yp')
-#def youporn(bot, trigger):
-#  foundComment = False
-#  opener = urllib2.build_opener()
-#  opener.addheaders.append(('Cookie', 'age_verified=1'))
-#
-#  for x in range(7):
-#    f = opener.open("http://www.youporn.com/random/video/")
-#    htmlSource = f.read()
-#    f.close()
-#    comments = re.findall(b'<div class="commentContent">((?:.|\\n)*?)</p>', htmlSource)
-#    if len(comments) == 0:
-#        continue
-#    randomcomment = random.choice(comments).replace(b"<p>", b"")
-#    bot.say(randomcomment, max_messages=2)
-#    foundComment = True
-#    break
-#  if not foundComment:
-#    bot.say("No comment found, please retry")
 
 @sopel.module.commands('youporn', 'yp')
 def youporn(bot, trigger):
@@ -181,6 +158,10 @@ def reverseDict(bot, trigger):
 def lenny(bot, trigger):
   bot.say(u"( ͡° ͜ʖ ͡°)")
 
+@sopel.module.commands("shrug")
+def rand_shrug(bot, trigger):
+   bot.say(u"%s" % (choice(shrugs)))
+
 @sopel.module.commands("shrug1")
 def shrug1(bot, trigger):
   bot.say(u"¯\_(ツ)_/¯")
@@ -212,14 +193,6 @@ def hackes(bot, trigger):
 def hackes2(bot, trigger):
    bot.say("THIS CHANNEL HAS BEEN HACKES!!!! ALL USERNAME THAT STAYED HERE FOR MORE THEN 300 SECONDS WILL AUTOMATICALLY RECEIVE A VT7.83 MICRO BUG THAT WILL DISABLE YOUR WINDOW SYSTEM EXCEPT WINDOW XP V1.03")
 
-@sopel.module.commands("shrug")
-def rand_shrug(bot, trigger):
-   bot.say(u"%s" % (choice(shrugs)))
-
-@sopel.module.commands("floss")
-def floss(bot, trigger):
-  bot.say("http://cal.guckes.net/")
-
 @sopel.module.commands("invasion","invasions")
 def invasion(bot, trigger):
   bot.say("https://wow.gameinfo.io/invasions")
@@ -228,4 +201,3 @@ def invasion(bot, trigger):
 def rather(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
   bot.say(choice(requests.get("http://www.reddit.com/r/MFDOOM_txt.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"])
-
