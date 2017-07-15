@@ -2,7 +2,7 @@
 import sopel
 import requests
 
-api = 'YOUR_API_KEY #gmaps distance matrix api key
+api = 'YOUR_API_KEY' #gmaps distance matrix api key
 
 def reversewoeid_search(query):
     """
