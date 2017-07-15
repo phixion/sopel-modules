@@ -5,6 +5,4 @@ python:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libenchant-dev redis-server
-install: "pip install -r requirements.txt -r dev-requirements.txt pycodestyle pytest pytest-cov mock codeclimate-test-reporter"
-script:
-   - pycodestyle --show-source --ignore=E501,E402,E722  ./
+install: "pip install -r requirements.txt -r dev-requirements.txt pytest pytest-cov mock codeclimate-test-reporter"
