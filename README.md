@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ridelore/sopel-modules.svg?branch=master)](https://travis-ci.org/ridelore/sopel-modules)
+
 # sopel-modules
 ## Modules for Sopel IRC Bot
 
