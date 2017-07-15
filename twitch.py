@@ -159,7 +159,6 @@ def streamer_status(bot, trigger):
   else:
     bot.say("Nobody is currently streaming.")
 
-
 @sopel.module.commands('hb','hitbox')
 @sopel.module.example('.hb  or .hitbox twitchusername')
 def hstreamer_status(bot, trigger):

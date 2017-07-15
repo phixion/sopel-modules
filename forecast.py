@@ -1,10 +1,5 @@
 # coding=utf-8
-# Copyright 2008, Sean B. Palmer, inamidst.com
-# Copyright 2012, Elsie Powell, embolalia.com
-# Licensed under the Eiffel Forum License 2.
-# A modification of sopel's weather.py after it was broken by yahoo's requirement for oauth authentication 
-# This module requires api keys for darksky.net and google url shortener
-# This can be cleaned up a lot and made more efficient.
+
 from __future__ import unicode_literals, absolute_import, print_function, division
 import requests
 import json
@@ -359,7 +354,6 @@ def moon(bot,trigger):
     moon = get_moon(forecast.json()['daily']['data'][0])[1:]
     bot.say(moon)
     
-
 @commands('setlocation', 'setwoeid')
 @example('.setlocation Columbus, OH')
 def update_woeid(bot, trigger):

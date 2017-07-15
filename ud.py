@@ -1,8 +1,4 @@
 #!/usr/bin/python3
-"""
-urbandict.py - urban dictionary module
-much cleaner, TODO bring random urban back
-"""
 
 import sopel.web as web
 import json

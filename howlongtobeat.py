@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import sopel
 
-
 @sopel.module.commands('hltb','howlong','howlongtobeat')
 @sopel.module.example('.hltb game name')
 def hltb(bot,trigger):

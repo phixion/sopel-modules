@@ -30,7 +30,6 @@ class TalkBotText(markovify.Text):
 
     return markovify.split_into_sentences(text)
 
-
 @sopel.module.rule(r'.*$')
 def talkbot(bot, trigger):
   for ignored_item in ignore:
@@ -45,7 +44,6 @@ def talkbot(bot, trigger):
   key = "%s%s:%s" % (today.month, today.day, trigger.nick.lower())
   db.sadd(key, str(trigger))
   db.expire(key, timeout)
-
 
 @sopel.module.commands('talk')
 def talkbot_talk(bot, trigger):

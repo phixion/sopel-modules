@@ -9,9 +9,7 @@ from sopel.tools import SopelMemory
 from sopel import web
 from sopel.module import commands, example, rule
 
-
 regex = re.compile('.*(vimeo.com/)([0-9]+)')
-
 
 def setup(bot):
     if not bot.memory.contains('url_callbacks'):
