@@ -6,6 +6,6 @@ pyenchant
 pygeoip
 requests>=2.0.0,<2.11.0
 redis
-requestslxml
+lxml
 google-api-python-client
 apiclient
