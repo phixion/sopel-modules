@@ -11,10 +11,9 @@ install: "pip install -r requirements.txt -r dev-requirements.txt pytest pytest-
 before_script: 
   - mkdir -p ~/.sopel/modules
   - ln -s $(pwd)/*.py ~/.sopel/modules/
-  - ln -s $(pwd)/doc/ldefault.cfg ~/.sopel/default.cfg
+  - ln -s $(pwd)/doc/default.cfg ~/.sopel/default.cfg
   - sed -i 's/^host =.*/host = 127.0.0.1/g' ~/.sopel/default.cfg
   - sed -i 's/redis_host =.*/redis_host = 127.0.0.1/g' ~/.sopel/default.cfg
-  - sed -i "s/REDIS_HOST =.*/REDIS_HOST = '127.0.0.1'/g" config.py
 script: sopel -d && sopel -q
 after_script: 
   - cat /tmp/web.log
