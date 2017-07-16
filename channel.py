@@ -128,12 +128,10 @@ def rather(bot, trigger):
 
 @sopel.module.commands('youporn', 'yp')
 def youporn(bot, trigger):
-  opener = urllib2.build_opener()
-  f = opener.open("https://porncomment.com")
-  htmlSource = f.readlines()
-  f.close()
-  randomcomment = htmlSource [31]
-  bot.say(randomcomment, max_messages=2)
+  header = {'accept': 'application/json'}
+  rpc = requests.get("https://porncomment.com", headers=header).json()["comments"]
+  comment = rpc[0]['body']
+  bot.say(comment, max_messages=2)
 
 @sopel.module.commands('jpg','jpeg')
 def jpg(bot, trigger):
