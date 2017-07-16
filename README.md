@@ -1,7 +1,8 @@
 [![Build Status](https://travis-ci.org/ridelore/sopel-modules.svg?branch=master)](https://travis-ci.org/ridelore/sopel-modules)
 
 # sopel-modules
-## Modules for Sopel IRC Bot
+## my modules for the sopel IRC Bot
+
 
 ### Requirements:
 
@@ -11,17 +12,25 @@
 ### Prerequisites:
 
 ```
-pip install -r requirements.txt (remove sopel if you build from a different source)
+pip install -r requirements.txt
 ```
+remove 'sopel' if you build from a different source
+
+
+### Installation
+
+[Clone this repository](https://help.github.com/articles/cloning-a-repository/) and [edit your bot's configfile to load modules from that directory](https://sopel.chat/docs/config.html#sopel.config.core_section.CoreSection.extra)
+
 
 ### API Keys:
 
 * [youtube](https://console.developers.google.com/)
-* [darksky (formerly forecast.io)](https://darksky.net/dev/)
 * [google maps traffic](https://console.developers.google.com/)
 * [google url shortener](https://console.developers.google.com/)
+* [darksky (formerly forecast.io)](https://darksky.net/dev/)
 * [soundcloud](https://developers.soundcloud.com/)
 * [twitch](https://www.twitch.tv/settings/connections)
+
 
 ### Contents:
 
@@ -42,6 +51,7 @@ pip install -r requirements.txt (remove sopel if you build from a different sour
 * cur.py - currency conversion and btc
 * dubtrack.py - returns the currently played song on beatheads dubtrack channel
 * sc.py - returns information to soundcloud links (tracks and playlist) (requires API key)
+
 
 ### Thanks:
 
