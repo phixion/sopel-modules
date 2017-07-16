@@ -51,6 +51,7 @@ remove 'sopel' if you build from a different source
 * cur.py - currency conversion and btc
 * dubtrack.py - returns the currently played song on beatheads dubtrack channel
 * sc.py - returns information to soundcloud links (tracks and playlist) (requires API key)
+* porncomment.py - returns a random porncomment if no searchterm is provided
 
 
 ### Thanks:

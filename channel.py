@@ -126,13 +126,6 @@ def rather(bot, trigger):
   header =  {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
   bot.say(choice(requests.get("http://www.reddit.com/r/wouldyourather.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"])
 
-@sopel.module.commands('youporn', 'yp')
-def youporn(bot, trigger):
-  header = {'accept': 'application/json'}
-  rpc = requests.get("https://porncomment.com", headers=header).json()["comments"]
-  comment = rpc[0]['body']
-  bot.say(comment, max_messages=2)
-
 @sopel.module.commands('jpg','jpeg')
 def jpg(bot, trigger):
    bot.say("Do I look like I know what a JPEG is? https://youtu.be/QEzhxP-pdos")
