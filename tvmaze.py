@@ -1,3 +1,4 @@
+# ported to sopel from https://github.com/anlutro/botologist/blob/master/plugins/tvseries.py
 import logging
 log = logging.getLogger(__name__)
 
