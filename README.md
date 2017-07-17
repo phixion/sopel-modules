@@ -52,6 +52,7 @@ remove 'sopel' if you build from a different source
 * dubtrack.py - returns the currently played song on beatheads dubtrack channel
 * sc.py - returns information to soundcloud links (tracks and playlist) (requires API key)
 * porncomment.py - returns a random porncomment if no searchterm is provided
+* tvmaze.py - looks up a tvshow's airing time and date using tvmaze api
 
 
 ### Thanks:
