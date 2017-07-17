@@ -34,7 +34,7 @@ remove 'sopel' if you build from a different source
 
 ### Contents:
 
-* channel.py - channelmodule (BlizzCon/QuakeCon counters, reddit queries, random youporn comments and more nonsense)
+* channel.py - channelmodule (BlizzCon/QuakeCon counters, reddit stuff, actually a lot of nonsense)
 * twitch.py - twitch.tv and hitbox.tv integration (info when link is posted, channel announcement when stream goes online)
 * ud.py - adds .urban command to query [urbandictionary.com](http://urbandictionary.com)
 * youtube.py - adds youtube APIv3.0 support to Sopel (requires API key)

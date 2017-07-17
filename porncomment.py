@@ -2,6 +2,7 @@ import sopel
 import requests
 
 @sopel.module.commands('yp')
+@sopel.module.example('.yp trump')
 def youporn(bot, trigger):
   search_for = trigger.group(2)
   header = {'accept': 'application/json'}
