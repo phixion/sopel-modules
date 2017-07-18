@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ridelore/sopel-modules.svg?branch=master)](https://travis-ci.org/ridelore/sopel-modules)
+[![Build Status](https://travis-ci.org/phixion/sopel-modules.svg?branch=master)](https://travis-ci.org/phixion/sopel-modules)
 
 # sopel-modules
 
