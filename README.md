@@ -53,6 +53,7 @@ remove 'sopel' if you build from a different source
 * sc.py - returns information to soundcloud links (tracks and playlist) (requires API key)
 * porncomment.py - returns a random porncomment if no searchterm is provided
 * tvmaze.py - looks up a tvshow's airing time and date using tvmaze api
+* rep.py - adds a reputation system (.h8 and .luv)
 
 
 ### Thanks:
