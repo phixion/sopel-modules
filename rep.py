@@ -3,7 +3,7 @@ from sopel.tools import Identifier
 import time
 import re
 
-TIMEOUT = 3600
+TIMEOUT = 36000
 
 
 @module.rule('^(</?3)\s+([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})\s*$')
