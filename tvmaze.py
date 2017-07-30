@@ -1,15 +1,9 @@
-# ported to sopel from https://github.com/anlutro/botologist/blob/master/plugins/tvseries.py
-import logging
-log = logging.getLogger(__name__)
-
+#import logging
 import datetime
 import dateutil.parser
 import requests
 import pytz
-
 import sopel
-
-
 
 def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 	query = {'q': show, 'embed': 'nextepisode'}
@@ -17,24 +11,24 @@ def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 		response = requests.get('http://api.tvmaze.com/singlesearch/shows', query)
 		response.raise_for_status()
 	except requests.exceptions.RequestException:
-		log.warning('TVMaze request caused an exception', exc_info=True)
+		#log.warning('TVMaze request caused an exception', exc_info=True)
 		return None
 
 	try:
 		data = response.json()
 	except ValueError:
-		log.warning('TVMaze returned invalid JSON: %r', response.text, exc_info=True)
+		#log.warning('TVMaze returned invalid JSON: %r', response.text, exc_info=True)
 		return None
 
 	info = data['name']
 	nextepisode = data.get('_embedded', {}).get('nextepisode')
 	if nextepisode:
-		log.debug('next episode data: %r', nextepisode)
+		#log.debug('next episode data: %r', nextepisode)
 		dt = dateutil.parser.parse(nextepisode['airstamp'])
 		info += ' - season %d, episode %d airs at %s' % (
 			nextepisode['season'],
 			nextepisode['number'],
-			dt.astimezone(tz=output_timezone).strftime('%Y-%m-%d %H:%M %z'),
+			dt.astimezone(tz=output_timezone).strftime('%Y-%m-%d %H:%M %Z'),
 		)
 		now = datetime.datetime.now(dt.tzinfo)
 		if dt > now:
@@ -51,7 +45,7 @@ def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 				)
 			else:
 				time_left_str = '%dm' % round(time_left.seconds / 60)
-			log.debug('time left: %r (%s)', time_left, time_left_str)
+			#log.debug('time left: %r (%s)', time_left, time_left_str)
 			info += ' (in %s)' % time_left_str
 	else:
 		info += ' - no next episode :('
@@ -60,7 +54,7 @@ def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 
 @sopel.module.commands('next')
 @sopel.module.example('.next Game of Thrones')
-def nextep(bot, trigger):
+def next_ep(bot, trigger):
 	search_for = trigger.group(2)
 	if not trigger.group(2):
 		return bot.say("Enter a TV Show to search for.")
