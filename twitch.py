@@ -96,7 +96,7 @@ def monitor_streamers(bot):
     if streamer not in streaming_names:
       currently_streaming[streamer][1]['cooldown'] += 10
     if currently_streaming[streamer][1]['cooldown'] > 130:
-      #bot.msg(logchannel,'{0} was removed from currently_streaming for reaching a cooldown of {1}'.format(streamer,currently_streaming[streamer][1]['cooldown']))
+      bot.msg(logchannel,'{0} was removed from currently_streaming for reaching a cooldown of {1}'.format(streamer,currently_streaming[streamer][1]['cooldown']))
       del currently_streaming[streamer]
 
   hstreaming_names = []
