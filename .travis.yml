@@ -16,4 +16,4 @@ before_script:
 script: sopel -d && sleep 60 && sopel -q
 after_script: 
   - cat ~/.sopel/logs/*.log
-dist: precise
+dist: trusty
