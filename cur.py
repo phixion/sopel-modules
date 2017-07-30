@@ -1,95 +1,61 @@
-# coding=utf-8
-from __future__ import unicode_literals, absolute_import, print_function, division
+import requests
+import sys
+import json
+import sopel
 
-import re
+last_prices = {}
+main_coins = ["btc", "xrp", "eth"]
+single_url = "http://api.cryptocoincharts.info/tradingPair/{0}_{1}"
+multi_url = "http://api.cryptocoincharts.info/tradingPairs"
 
-from requests import get
-from sopel.module import commands, example, NOLIMIT
+@sopel.module.rule('^\.(\w+)2(\w+)\s?(\d+)?$')
+def crypto_exchange(bot, trigger):
+  from_cur = trigger.group(1)
+  to_cur = trigger.group(2)
+  quantity = float(trigger.group(3)) if trigger.group(3) is not None else 1
 
-# The Canadian central bank has better exchange rate data than the Fed, the
-# Bank of England, or the European Central Bank. Who knew?
-base_url = 'http://www.bankofcanada.ca/stats/assets/rates_rss/noon/en_{}.xml'
-regex = re.compile(r'''
-    (\d+(?:\.\d+)?)        # Decimal number
-    \s*([a-zA-Z]{3})       # 3-letter currency code
-    \s+(?:in|as|of|to)\s+  # preposition
-    ([a-zA-Z]{3})          # 3-letter currency code
-    ''', re.VERBOSE)
+  api_result = requests.get(single_url.format(from_cur, to_cur)).json()
+  calc_result = quantity * float(api_result["price"])
 
+  bot.say("{0} {1} is about {2:.4f} {3}".format(quantity, api_result["coin1"], float(calc_result), api_result["coin2"]))
 
-def get_rate(code):
-    code = code.upper()
-    if code == 'CAD':
-        return 1, 'Canadian Dollar'
-    elif code == 'BTC':
-        btc_rate = get('https://apiv2.bitcoinaverage.com/indices/global/ticker/BTCCAD')
-        rates = btc_rate.json()
-        return 1 / rates['averages']['day'], 'Bitcoin—24hr average'
+@sopel.module.rule('^\.({0})$'.format("|".join(main_coins)))
+def crypto_spot(bot, trigger):
+  from_cur = trigger.group(1)
+  global last_prices
+  from_cur = from_cur.lower()
+  if from_cur not in main_coins:
+    bot.say("Invalid currency!")
 
-    data = get("http://www.bankofcanada.ca/valet/observations/FX{}CAD/json".format(code))
-    name = data.json()['seriesDetail']['FX{}CAD'.format(code)]['description']
-    name = name.split(" to Canadian")[0]
-    json = data.json()['observations']
-    for element in reversed(json):
-        if 'v' in element['FX{}CAD'.format(code)]:
-            return 1 / float(element['FX{}CAD'.format(code)]['v']), name
+  api_result = requests.get(single_url.format(from_cur, "usd")).json()
 
+  if from_cur not in last_prices:
+    last_prices[from_cur] = 0
 
-@commands('cur', 'currency', 'exchange')
-@example('.cur 20 EUR in USD')
-def exchange(bot, trigger):
-    """Show the exchange rate between two currencies"""
-    if not trigger.group(2):
-        return bot.reply("No search term. An example: .cur 20 EUR in USD")
-    match = regex.match(trigger.group(2))
-    if not match:
-        # It's apologetic, because it's using Canadian data.
-        bot.reply("Sorry, I didn't understand the input.")
-        return NOLIMIT
+  diffStr = getDiffString(float(api_result["price"]), last_prices[from_cur])
+  last_prices[from_cur] = float(api_result["price"])
+  bot.say("{0}: ${1:.4f}{2}".format(api_result["id"], float(api_result["price"]), diffStr))
 
-    amount, of, to = match.groups()
-    try:
-        amount = float(amount)
-    except:
-        bot.reply("Sorry, I didn't understand the input.")
-    display(bot, amount, of, to)
+@sopel.module.commands('ticker','tick')
+def tick(bot, trigger):
+  global last_prices
+  pairs = ",".join(["{0}_usd".format(x) for x in main_coins])
+  api_result = requests.post(multi_url, data={"pairs": pairs}).json()
 
+  for currency in api_result:
+    coin = currency["id"].split("/")[0]
 
-def display(bot, amount, of, to):
-    if not amount:
-        bot.reply("Zero is zero, no matter what country you're in.")
-    try:
-        of_rate, of_name = get_rate(of)
-        if not of_name:
-            bot.reply("Unknown currency: %s" % of)
-            return
-        to_rate, to_name = get_rate(to)
-        if not to_name:
-            bot.reply("Unknown currency: %s" % to)
-            return
-    except Exception:
-        bot.reply("Something went wrong while I was getting the exchange rate.")
-        return NOLIMIT
+    if coin not in last_prices:
+      last_prices[coin] = 0
 
-    result = amount / of_rate * to_rate
-    bot.say("{} {} ({}) = {} {} ({})".format(amount, of.upper(), of_name,
-                                             result, to.upper(), to_name))
+    diffStr = getDiffString(float(currency["price"]), last_prices[coin])
+    last_prices[coin] = float(currency["price"])
+    bot.say("{0}: ${1:.4f}{2}".format(currency["id"], float(currency["price"]), diffStr))
 
-
-@commands('btc', 'bitcoin')
-@example('.btc 20 EUR')
-def bitcoin(bot, trigger):
-    #if 2 args, 1st is number and 2nd is currency. If 1 arg, it's either the number or the currency.
-    to = trigger.group(4)
-    amount = trigger.group(3)
-    if not to:
-        to = trigger.group(3) or 'USD'
-        amount = 1
-
-    try:
-        amount = float(amount)
-    except:
-        bot.reply("Sorry, I didn't understand the input.")
-        return NOLIMIT
-
-    display(bot, amount, 'BTC', to)
+def getDiffString(current_price, last_price):
+  diff = current_price - last_price
+  diffStr = ""
+  if diff != 0:
+    sign = "+" if diff > 0 else ''
+    diffStr = " ({0}{1:.4f})".format(sign, diff)
+  return diffStr
