@@ -5,7 +5,7 @@ services:
   - redis-server
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y -o Dpkg::Options::=--force-confnew python python-dev python-pip redis-server build-essential libevent-dev libenchant-dev ircd-irc2 mysql-server libmysqlclient-dev
+  - sudo apt-get install -y -o Dpkg::Options::=--force-confnew python python-dev python-pip redis-server build-essential libevent-dev libenchant-dev ircd-irc2 
 install: "pip install -r requirements.txt -r dev-requirements.txt"
 before_script: 
   - mkdir -p ~/.sopel/modules
