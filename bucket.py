@@ -186,6 +186,10 @@ def add_fact(bot, trigger, fact, tidbit):
     return True
 
 @rule('$nick' '(take|have) (.*)')
+#@rule('((^\001ACTION (gives|hands|throws|serves) $nick)|^$nick..(take|have) (this|my|your|.*)) (.*)')
+#@rule('^\001ACTION puts (.*) in $nick')
+#@rule('^\001ACTION (?:gives|hands|serves) (.*) to $nick')
+
 def inv_give(bot, trigger):
     ''' Called when someone gives us an item '''
     inventory = bot.memory['inventory']
@@ -219,6 +223,7 @@ def get_inventory(bot, trigger):
     bot.action('is carrying ' + readable_item_list)
 
 @rule('$nick' 'restock')
+@rule('$nick' 'you need new things(.*|)')
 @priority('medium')
 def inv_populate(bot, trigger):
     # bucket_runtime_data.inhibit_reply = trigger
