@@ -61,3 +61,4 @@ def next_ep(bot, trigger):
 	else:
 		info = get_next_episode_info(''.join(search_for))
 		return bot.say(info)
+	
