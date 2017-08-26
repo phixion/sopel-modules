@@ -52,14 +52,17 @@ hstreamers = [
 #end config
 
 twitchregex = re.compile('(?!.*\/v\/).*https?:\/\/(?:www\.)?twitch.tv\/(.*?)\/?(?:(?=[\s])|$)')
+mixerregex = re.compile('(?!.*\/v\/).*https?:\/\/(?:www\.)?mixer.com\/(.*?)\/?(?:(?=[\s])|$)')
 
 def setup(bot):
     if not bot.memory.contains('url_callbacks'):
         bot.memory['url_callbacks'] = SopelMemory()
     bot.memory['url_callbacks'][twitchregex] = twitchirc
+    bot.memory['url_callbacks'][mixerregex] = mixerirc
 
 def shutdown(bot):
     del bot.memory['url_callbacks'][twitchregex]
+    del bot.memory['url_callbacks'][mixerregex]
 
 currently_streaming = {}
 currently_hstreaming = {}
@@ -103,11 +106,11 @@ def monitor_streamers(bot):
   hs = ",".join(hstreamers)
   try:
     testingtimeout = datetime.datetime.now()
-    hstreaming = requests.get('http://api.hitbox.tv/media/live/{0}'.format(hs),timeout=(1.5,1.5)).json()
+    hstreaming = requests.get('http://api.smashcast.tv/media/live/{0}'.format(hs),timeout=(1.5,1.5)).json()
   except requests.exceptions.ConnectionError:
     return bot.msg(logchannel,"timeout time: {}".format((datetime.datetime.now() - testingtimeout).total_seconds()))
   except:
-    return bot.msg(logchannel,"error with hitbox api")
+    return bot.msg(logchannel,"error with smashcast api")
   hresults = []
   if hstreaming.get("livestream"):
     for hstreamer in hstreaming["livestream"]:
@@ -133,7 +136,7 @@ def monitor_streamers(bot):
       del currently_hstreaming[hstreamer]
 
 @sopel.module.commands('twitchtv','twitch')
-@sopel.module.example('.twitchtv  or .twitch twitchusername')
+@sopel.module.example('.twitchtv  or .twitch username')
 def streamer_status(bot, trigger):
   streamer_name = trigger.group(2)
   query = streamers if streamer_name is None else streamer_name.split(" ")
@@ -159,12 +162,12 @@ def streamer_status(bot, trigger):
   else:
     bot.say("Nobody is currently streaming.")
 
-@sopel.module.commands('hb','hitbox')
-@sopel.module.example('.hb  or .hitbox twitchusername')
+@sopel.module.commands('sc','smashcast')
+@sopel.module.example('.sc  or .sc username')
 def hstreamer_status(bot, trigger):
   hstreamer_name = trigger.group(2)
   query = ",".join(hstreamers) if hstreamer_name is None else hstreamer_name
-  hstreaming = requests.get('http://api.hitbox.tv/media/live/{0}'.format(query)).json()
+  hstreaming = requests.get('http://api.smashcast.tv/media/live/{0}'.format(query)).json()
   hresults = []
   for hstreamer in hstreaming["livestream"]:
     if hstreamer["media_is_live"] is "1":
@@ -204,7 +207,7 @@ def allstreamer_status(bot, trigger):
                                                            streamer_viewers,
                                                            "s" if streamer_viewers != 1 else "" ))
   query = ",".join(hstreamers)
-  hstreaming = requests.get('http://api.hitbox.tv/media/live/{0}'.format(query)).json()
+  hstreaming = requests.get('http://api.smashcast.tv/media/live/{0}'.format(query)).json()
   hresults = []
   if hstreaming.get("livestream"):
     for hstreamer in hstreaming["livestream"]:
@@ -249,6 +252,31 @@ def twitchirc(bot, trigger, match = None):
   else:
     pass
     #bot.say("Nobody is currently streaming.")
+
+@sopel.module.rule('(?!.*\/v\/).*https?:\/\/(?:www\.)?mixer.com\/(.*?)\/?(?:(?=[\s])|$)')
+def mixerirc(bot, trigger, match = None):
+  match = match or trigger
+  streamer_name = match.group(1)
+  streaming = requests.get('https://mixer.com/api/v1/channels/{}'.format(streamer_name)).json()
+  results = []
+  if streaming:
+    streamer_name = streaming["token"]
+    if streaming.get("type"):
+      streamer_game = streaming["type"]["name"]
+    else:
+      streamer_game = "a game"
+    streamer_status = streaming["name"]
+    streamer_viewers = streaming["viewersCurrent"]
+
+  results.append("%s is playing %s [%s] - %s viewer%s" % (streamer_name,
+                                                         streamer_game,
+                                                         streamer_status,
+                                                         streamer_viewers,
+                                                         "s" if streamer_viewers != 1 else "" ))
+  if results:
+    bot.say(", ".join(results))
+  else:
+    pass
 
 @sopel.module.commands('debugtv')
 def debug(bot, trigger):
