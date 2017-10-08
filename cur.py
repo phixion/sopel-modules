@@ -1,3 +1,5 @@
+# Flexible crypto currency module
+# Created by @sc0tt (https://github.com/sc0tt)
 import requests
 import sys
 import json
@@ -77,3 +79,4 @@ def crates(bot, trigger):
   with open('/home/bot/.sopel/cur_py_cache', 'w') as outfile:
     json.dump(last_prices, outfile)
   bot.say(" | ".join(results))
+  
