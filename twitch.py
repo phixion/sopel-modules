@@ -224,7 +224,7 @@ def allstreamer_status(bot, trigger):
                                                            "s" if hstreamer_viewers != 1 else "" ))
 
   if results:
-    bot.say(", ".join(results))
+    bot.say(", ".join(results), max_messages=3)
   else:
     bot.say("Nobody is currently streaming.")
 
