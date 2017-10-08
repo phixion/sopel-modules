@@ -52,7 +52,7 @@ def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 
 	return info
 
-@sopel.module.commands('next')
+@sopel.module.commands('next', 'n')
 @sopel.module.example('.next Game of Thrones')
 def next_ep(bot, trigger):
 	search_for = trigger.group(2)
