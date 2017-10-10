@@ -59,5 +59,6 @@ remove 'sopel' if you build from a different source
 
 ### Thanks:
 
-* [dasu](https://github.com/dasu) as most of the modules are based on his
+* [dasu](https://github.com/dasu) and [sc0tt](https://github.com/sc0tt) as most of the modules are based on his
+
 
