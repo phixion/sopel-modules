@@ -25,7 +25,7 @@ def crypto_spot(bot, trigger):
   digits = False if from_cur.lower()=='xrp' else True
   diffStr = getDiffString(float(api_result["last_price"]), last_prices[from_cur], digits)
   last_prices[from_cur] = float(api_result["last_price"])
-  with open('/home/bot/.sopel/cur_py_cache', 'w') as outfile:
+  with open('~/.sopel/cur_py_cache', 'w') as outfile:
     json.dump(last_prices, outfile)
   bot.say("{0}: ${1:.{2}f}{3}".format(from_cur, float(api_result["last_price"]), 2 if digits else 4, diffStr))
 
@@ -41,7 +41,7 @@ def tick(bot, trigger):
     diffStr = getDiffString(float(api_result["last_price"]), last_prices[coin], digits)
     last_prices[coin] = float(api_result["last_price"])
     results.append("{0}: ${1:.{2}f}{3}".format(coin, float(api_result["last_price"]), 2 if digits else 4, diffStr))
-  with open('/home/bot/.sopel/cur_py_cache', 'w') as outfile:
+  with open('~/.sopel/cur_py_cache', 'w') as outfile:
     json.dump(last_prices, outfile)
   bot.say(" | ".join(results))
 
@@ -52,7 +52,7 @@ def getDiffString(current_price, last_price, crates=False):
   if diff != 0:
     sign = "+" if diff > 0 else ''
     diffStr = " ({0}{1:.{2}f})".format(sign, diff, 2 if crates else 4)
-  with open('/home/bot/.sopel/cur_py_cache', 'w') as outfile:
+  with open('~/.sopel/cur_py_cache', 'w') as outfile:
     json.dump(last_prices, outfile)
   return diffStr
 
@@ -76,7 +76,7 @@ def crates(bot, trigger):
   results = []
   for crate in crates:
     results.append(getSteamMarketPrice(crate))
-  with open('/home/bot/.sopel/cur_py_cache', 'w') as outfile:
+  with open('~/.sopel/cur_py_cache', 'w') as outfile:
     json.dump(last_prices, outfile)
   bot.say(" | ".join(results))
   
