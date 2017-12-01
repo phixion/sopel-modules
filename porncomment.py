@@ -1,3 +1,4 @@
+#based on https://github.com/anlutro/botologist
 import sopel
 import requests
 
