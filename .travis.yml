@@ -9,7 +9,7 @@ before_install:
 install: "pip install -r requirements.txt -r dev-requirements.txt"
 before_script: 
   - mkdir -p ~/.sopel/modules
-  - touch ~/.sopel/cur_py_cache
+  - ln -s $(pwd)/doc/cur_py_cache ~/.sopel/cur_py_cache
   - ln -s $(pwd)/*.py ~/.sopel/modules/
   - ln -s $(pwd)/doc/default.cfg ~/.sopel/default.cfg
   - sed -i 's/^host =.*/host = 127.0.0.1/g' ~/.sopel/default.cfg
