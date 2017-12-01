@@ -1,4 +1,4 @@
-#import logging
+#based on https://github.com/anlutro/botologist
 import datetime
 import dateutil.parser
 import requests
