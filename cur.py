@@ -5,7 +5,7 @@ import sys
 import json
 import sopel
 
-with open('/home/bot/.sopel/cur_py_cache') as read_file:
+with open('~/.sopel/cur_py_cache') as read_file:
   last_prices = json.load(read_file)
 main_coins = ["btc", "bch", "xrp", "eth"]
 single_url = "https://api.bitfinex.com/v1/pubticker/{0}usd"
