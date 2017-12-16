@@ -7,7 +7,7 @@ import sopel
 
 with open('~/.sopel/cur_py_cache') as read_file:
   last_prices = json.load(read_file)
-main_coins = ["btc", "bch", "xrp", "eth","iot"]
+main_coins = ["btc", "bch", "xrp", "eth", "iot", "ltc"]
 single_url = "https://api.bitfinex.com/v1/pubticker/{0}usd"
 
 @sopel.module.rule('^\.({0})$'.format("|".join(main_coins)))
