@@ -158,7 +158,7 @@ def tifu(bot, trigger):
 @sopel.module.commands('rather','wyr')
 def rather(bot, trigger):
     header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.2228.0 Safari/537.36"}
-    pick = choice(requests.get("http://www.reddit.com/r/wouldyourather.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"])
+    pick = choice(requests.get("http://www.reddit.com/r/wouldyourather.json?limit=100", headers=header).json()["data"]["children"])["data"]["title"]
     bot.say("%s - %s" % (pick["title"], pick["url"]))
 
 @sopel.module.commands('hmf','fries','pommes','holdmyfries')
