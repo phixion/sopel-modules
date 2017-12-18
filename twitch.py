@@ -43,7 +43,9 @@ streamers = [
   "deadmau5",
   "ridelore",
   "luke_lafr",
-  "quakechampions"
+  "quakechampions",
+  "warcraft",
+  "iverass"
 ]
 
 hstreamers = [
