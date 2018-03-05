@@ -180,7 +180,11 @@ def jpg(bot, trigger):
 def fap(bot, trigger):
     bot.say("https://i.imgur.com/9ciSNye.gifv")
 
-@sopel.module.commands('hexspeak1')
+@sopel.module.commands('hexspeak1','hexspeak')
 def hexspeak1(bot, trigger):
     raw = requests.get("https://raw.githubusercontent.com/phixion/hexspeak/master/hex1.txt")
     bot.say(choice(raw.text.split('\n')).split(" ")[-1])
+
+@sopel.module.commands('hexham')
+def hexham(bot, trigger):
+    bot.say("the fucking command for weather is .wea")
