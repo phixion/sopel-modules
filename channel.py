@@ -179,3 +179,8 @@ def jpg(bot, trigger):
 @sopel.module.commands('fap','fapathon')
 def fap(bot, trigger):
     bot.say("https://i.imgur.com/9ciSNye.gifv")
+
+@sopel.module.commands('hexspeak1')
+def hexspeak1(bot, trigger):
+    raw = requests.get("https://raw.githubusercontent.com/realsh00p/hexspeak/master/hex1.txt")
+    bot.say(choice(raw.text.split('\n')).split(" ")[-1])
