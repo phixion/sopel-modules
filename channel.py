@@ -203,3 +203,12 @@ def lewd(bot,trigger):
         else:
             bot.say("phew safe... lewd score: %.3f/1.00"%js['adult']['adultScore'])
 
+@sopel.module.commands('wit')
+def wittest(bot,trigger):
+    line = trigger.group(2)
+    res = requests.get("https://api.wit.ai/message?v=CHANGE_ME&q={}".format(requests.utils.quote(line)), headers = {'Authorization':'CHANGE_ME'}).json() #requires wit.ai api key, and some training.
+    try:
+        x = res['entities']['datetime'][0]['value']
+    except:
+        x = res['entities']['datetime'][0]['to']['value']
+    bot.say(x)
