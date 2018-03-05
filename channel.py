@@ -188,3 +188,18 @@ def hexspeak1(bot, trigger):
 @sopel.module.commands('hexham')
 def hexham(bot, trigger):
     bot.say("the fucking command for weather is .wea")
+
+@sopel.module.commands('lewd','sfw','nsfw') #see https://github.com/dasu/syrup-sopel-modules/
+def lewd(bot,trigger):
+    url = 'https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze'
+    headers = {'Ocp-Apim-Subscription-Key': 'CHANGE_ME'} #requires microsoft computer vision api key
+    params = {'visualFeatures':'Adult'}
+    if trigger.group(2):
+        data = {'url': trigger.group(2)}
+        req = requests.post(url, headers=headers, params=params, json=data)
+        js = req.json()
+        if js['adult']['isAdultContent']:
+            bot.say("[NSFW] wow lewd... lewd score: %.3f/1.00"%js['adult']['adultScore'])
+        else:
+            bot.say("phew safe... lewd score: %.3f/1.00"%js['adult']['adultScore'])
+
