@@ -182,5 +182,5 @@ def fap(bot, trigger):
 
 @sopel.module.commands('hexspeak1')
 def hexspeak1(bot, trigger):
-    raw = requests.get("https://raw.githubusercontent.com/realsh00p/hexspeak/master/hex1.txt")
+    raw = requests.get("https://raw.githubusercontent.com/phixion/hexspeak/master/hex1.txt")
     bot.say(choice(raw.text.split('\n')).split(" ")[-1])
