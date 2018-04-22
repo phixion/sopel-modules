@@ -189,6 +189,10 @@ def hexspeak1(bot, trigger):
 def hexham(bot, trigger):
     bot.say("the fucking command for weather is .wea")
 
+@sopel.module.commands('gpoy')
+def gpoy(bot, trigger):
+    bot.say("https://youtu.be/OLHBAzAiFNk")
+
 @sopel.module.commands('lewd','sfw','nsfw') #see https://github.com/dasu/syrup-sopel-modules/
 def lewd(bot,trigger):
     url = 'https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze'
