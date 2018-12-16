@@ -5,7 +5,7 @@ import sopel
 
 # Change this if you want, it will increase the DB size eventually.
 timeout = 60 * 60 * 24 * 30 # 60s * 60m * 24h * 30d = 1 month
-ignore = ["http"]
+ignore = ["http","https"]
 
 MAX_OVERLAP_RATIO = 0.5
 MAX_OVERLAP_TOTAL = 10
