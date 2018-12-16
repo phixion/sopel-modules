@@ -30,22 +30,6 @@ class TalkBotText(markovify.Text):
 
     return markovify.split_into_sentences(text)
 
-def setup(bot):
-  global fullresults
-  global fullmodel
-  #global llines
-  #llines = 0
-  fullresults = []
-  for k in db.keys('*'):
-    fullresults.extend(db.smembers(k))
-  fullmodel = TalkBotText("\n".join([r.decode('utf8') for r in fullresults]), state_size=3)
-
-@sopel.module.interval(86400)
-def refresh_results(bot):
-  fullresults = []
-  for k in db.keys('*'):
-    fullresults.extend(db.smembers(k))
-  fullmodel = TalkBotText("\n".join([r.decode('utf8') for r in fullresults]), state_size=3)
 
 @sopel.module.rule(r'.*$')
 def talkbot(bot, trigger):
