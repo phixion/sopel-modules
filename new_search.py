@@ -8,7 +8,6 @@ import json
 import sys
 import requests
 
-
 #if sys.version_info.major < 3:
 #    from urllib import quote_plus
 #else:
@@ -116,16 +115,16 @@ def search(bot, trigger):
 
     bot.reply(result)
 
-#@commands('suggest')
-#def suggest(bot, trigger):
-#    """Suggest terms starting with given input"""
-#    if not trigger.group(2):
-#        return bot.reply("No query term.")
-#    query = trigger.group(2)
-#    uri = 'http://websitedev.de/temp-bin/suggest.pl?q='
-#    #answer = web.get(uri + query.replace('+', '%2B'))
-#    answer = requests.get(uri+query.replace('+', '%2B')).content
-#    if answer:
-#        bot.say(answer)
-#    else:
-#        bot.reply('Sorry, no result.')
+@commands('suggest')
+def suggest(bot, trigger):
+    """Suggest terms starting with given input"""
+    if not trigger.group(2):
+        return bot.reply("No query term.")
+    query = trigger.group(2)
+    uri = 'http://websitedev.de/temp-bin/suggest.pl?q='
+    #answer = web.get(uri + query.replace('+', '%2B'))
+    answer = requests.get(uri+query.replace('+', '%2B')).content
+    if answer:
+        bot.say(answer)
+    else:
+        bot.reply('Sorry, no result.')

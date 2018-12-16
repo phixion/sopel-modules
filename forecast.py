@@ -354,6 +354,7 @@ def moon(bot,trigger):
     moon = get_moon(forecast.json()['daily']['data'][0])[1:]
     bot.say(moon)
     
+
 @commands('setlocation', 'setwoeid')
 @example('.setlocation Columbus, OH')
 def update_woeid(bot, trigger):

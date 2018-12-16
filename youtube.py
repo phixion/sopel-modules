@@ -1,5 +1,5 @@
 # coding=utf8
-"""Youtube module for Sopel"""
+
 from __future__ import unicode_literals, division
 
 from sopel.module import rule, commands, example
@@ -26,9 +26,11 @@ ISO8601_PERIOD_REGEX = re.compile(
 regex = re.compile('(youtube.com/watch\S*v=|youtu.be/)([\w-]+)')
 API = None
 
+
 class YoutubeSection(StaticSection):
     api_key = ValidatedAttribute('api_key', default=NO_DEFAULT)
     """The Google API key to auth to the endpoint"""
+
 
 def configure(config):
     config.define_section('youtube', YoutubeSection, validate=False)
@@ -36,6 +38,7 @@ def configure(config):
         'api_key',
         'Enter your Google API key.',
     )
+
 
 def setup(bot):
     bot.config.define_section('youtube', YoutubeSection)
@@ -46,8 +49,10 @@ def setup(bot):
     API = googleapiclient.discovery.build("youtube", "v3",
                                     developerKey=bot.config.youtube.api_key)
 
+
 def shutdown(bot):
     del bot.memory['url_callbacks'][regex]
+
 
 @commands('yt', 'youtube')
 @example('.yt h3h3productions rekt together')
@@ -68,6 +73,7 @@ def search(bot, trigger):
 
     _say_result(bot, trigger, results[0]['id']['videoId'])
 
+
 @rule('.*(youtube.com/watch\S*v=|youtu.be/)([\w-]+).*')
 def get_info(bot, trigger, found_match=None):
     """
@@ -75,6 +81,7 @@ def get_info(bot, trigger, found_match=None):
     """
     match = found_match or trigger
     _say_result(bot, trigger, match.group(2), include_link=False)
+
 
 def _say_result(bot, trigger, id_, include_link=True):
     result = API.videos().list(
@@ -118,6 +125,7 @@ def _say_result(bot, trigger, id_, include_link=True):
         message = message + ' | Link: https://youtu.be/' + id_
     bot.say(message)
 
+
 def _parse_duration(duration):
     splitdur = ISO8601_PERIOD_REGEX.match(duration)
     dur = []
@@ -125,6 +133,7 @@ def _parse_duration(duration):
         if v is not None:
             dur.append(v.lower())
     return ' '.join(dur)
+
 
 def _parse_published_at(bot, trigger, published):
     pubdate = datetime.datetime.strptime(published, '%Y-%m-%dT%H:%M:%S.%fZ')

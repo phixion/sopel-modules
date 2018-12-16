@@ -4,7 +4,7 @@ import soundcloud
 import re
 
 scregex = re.compile('.*(https?:\/\/soundcloud.com\/.*?\/(?!likes|tracks|albums|sets|reposts).*?((?=[\s])|$))')
-client_id = '' #soundcloud client ID
+client_id = 'YOUR_API_KEY' #soundcloud client ID
 def setup(bot):
     if not bot.memory.contains('url_callbacks'):
         bot.memory['url_callbacks'] = SopelMemory()
@@ -35,3 +35,7 @@ def soundcloudirc(bot, trigger, match=None):
     if track.kind == 'playlist':
         track_count = track.track_count
         bot.say(u"{0} - {1} [{2}] Tracks: {3} {4}".format(artist,title,time,track_count,"Genre: {}".format(genre) if track.genre else ""))
+
+
+
+

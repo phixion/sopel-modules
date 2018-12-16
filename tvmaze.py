@@ -1,4 +1,4 @@
-#based on https://github.com/anlutro/botologist
+#import logging
 import datetime
 import dateutil.parser
 import requests
@@ -52,7 +52,7 @@ def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 
 	return info
 
-@sopel.module.commands('next', 'n')
+@sopel.module.commands('next','n')
 @sopel.module.example('.next Game of Thrones')
 def next_ep(bot, trigger):
 	search_for = trigger.group(2)
@@ -61,4 +61,3 @@ def next_ep(bot, trigger):
 	else:
 		info = get_next_episode_info(''.join(search_for))
 		return bot.say(info)
-	
