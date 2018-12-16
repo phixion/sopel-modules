@@ -13,5 +13,3 @@ beautifulsoup4
 markovify
 soundcloud
 python-dateutil
-mysqlclient
-sqlalchemy
