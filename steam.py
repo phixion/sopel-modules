@@ -95,6 +95,7 @@ def steam(bot,trigger):
                                             " https://steamdb.info/app/{}/".format(appid)))
 
 @sopel.module.rule('.*https?:\/\/store\.steampowered\.com\/app\/(.*?\/)(?:.*?\/)?(?:.*)((?=[\s])|$)')
+@sopel.module.rule('.*https?:\/\/steamdb\.info\/app\/(.*?\/)(?:.*?\/)?(?:.*)((?=[\s])|$)')
 def steamirc(bot,trigger, match=None):
     match = match or trigger
     appid = match.group(1)[:-1]
