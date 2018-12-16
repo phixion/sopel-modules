@@ -53,50 +53,19 @@ def talkbot_talk(bot, trigger):
   if nick:
     pattern = "*:%s" % nick.lower()
     min_lines = 200
-    results = []
-    for k in db.keys(pattern):
-      results.extend(db.smembers(k))
   else:
-    #pattern = "*"
+    pattern = "*"
     min_lines = 100
-    results = fullresults
 
-  #results = []
-  #for k in db.keys(pattern):
-  #  results.extend(db.smembers(k))
+  results = []
+  for k in db.keys(pattern):
+    results.extend(db.smembers(k))
 
   if len(results) < min_lines:
     bot.say("Sorry %s, there is not enough data." % trigger.nick)
   else:
-    if nick:
-      model = TalkBotText("\n".join([r.decode('utf8') for r in results]), state_size=3)
-      nicklist = []
-      resp = []
-      nicks = bot.channels[trigger.sender.lower()].users
-      for nick in nicks:
-        nicklist.append(nick)
-      while not resp:
-        resp = model.make_short_sentence(140,
-          max_overlap_total=MAX_OVERLAP_TOTAL,
-          max_overlap_ratio=MAX_OVERLAP_RATIO)
-      while any(word in resp.lower().split() for word in nicklist):
-        resp = model.make_short_sentence(140,
-          max_overlap_total=MAX_OVERLAP_TOTAL, 
-          max_overlap_ratio=MAX_OVERLAP_RATIO)
-      bot.say(resp)
-    else:
-      nicklist = []
-      fullresp = []
-      nicks = bot.channels[trigger.sender.lower()].users
-      for nick in nicks:
-        nicklist.append(nick)
-      while not fullresp:
-        fullresp = fullmodel.make_short_sentence(140,
-          max_overlap_total=MAX_OVERLAP_TOTAL,
-          max_overlap_ratio=MAX_OVERLAP_RATIO)
-      if fullresp:
-        while any(word in fullresp.lower().split() for word in nicklist):
-          fullresp = fullmodel.make_short_sentence(140,
-            max_overlap_total=MAX_OVERLAP_TOTAL,
-            max_overlap_ratio=MAX_OVERLAP_RATIO)
-        bot.say(fullresp)
+    model = TalkBotText("\n".join([r.decode('utf8') for r in results]))
+    resp = model.make_short_sentence(500,
+      max_overlap_total=MAX_OVERLAP_TOTAL, 
+      max_overlap_ratio=MAX_OVERLAP_RATIO)
+    bot.say(resp)
