@@ -8,13 +8,13 @@ TIMEOUT = 36000
 
 @module.rule('^(</?3)\s+([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})\s*$')
 @module.intent('ACTION')
-@module.require_chanmsg("You may only modify someone's rep in a channel.")
+@module.require_chanmsg("You may only modify someone's social credsits in a channel.")
 def heart_cmd(bot, trigger):
     luv_h8(bot, trigger, trigger.group(2), 'h8' if '/' in trigger.group(1) else 'luv')
 
 
 @module.rule('.*?(?:([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})(\+{2}|-{2})).*?')
-@module.require_chanmsg("You may only modify someone's rep in a channel.")
+@module.require_chanmsg("You may only modify someone's social credits in a channel.")
 def karma_cmd(bot, trigger):
     if re.match('^({prefix})({cmds})'.format(prefix=bot.config.core.prefix, cmds='|'.join(luv_h8_cmd.commands)),
                 trigger.group(0)):
@@ -25,9 +25,9 @@ def karma_cmd(bot, trigger):
 
 
 @module.commands('luv', 'h8')
-@module.example(".luv Phixion")
-@module.example(".h8 Thaya")
-@module.require_chanmsg("You may only modify someone's rep in a channel.")
+@module.example(".luv moop")
+@module.example(".h8 Akundo69")
+@module.require_chanmsg("You may only modify someone's social credits in a channel.")
 def luv_h8_cmd(bot, trigger):
     if not trigger.group(3):
         bot.reply("No user specified.")
@@ -59,7 +59,7 @@ def luv_h8(bot, trigger, target, which, warn_nonexistent=True):
         bot.reply(selfreply)
         return False
     rep = mod_rep(bot, trigger.nick, target, change)
-    bot.say("%s has %screased %s's reputation score to %d" % (trigger.nick, pfx, target, rep))
+    bot.say("%s has %screased %s's social credits to %d" % (trigger.nick, pfx, target, rep))
     return True
 
 
@@ -69,9 +69,9 @@ def show_rep(bot, trigger):
     target = trigger.group(3) or trigger.nick
     rep = get_rep(bot, target)
     if rep is None:
-        bot.say("%s has no reputation score yet." % target)
+        bot.say("%s has no social credits yet." % target)
         return
-    bot.say("%s's current reputation score is %d." % (target, rep))
+    bot.say("%s's current social credits: %d." % (target, rep))
 
 
 # helpers
@@ -108,7 +108,7 @@ def rep_used_since(bot, nick):
 def rep_too_soon(bot, nick):
     since = rep_used_since(bot, nick)
     if since < TIMEOUT:
-        bot.notice("You must wait %d more seconds before changing someone's rep again." % (TIMEOUT - since), nick)
+        bot.notice("You must wait %d more seconds before changing someone's social credits again." % (TIMEOUT - since), nick)
         return True
     else:
         return False
