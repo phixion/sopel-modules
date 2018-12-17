@@ -5,12 +5,11 @@ import re
 
 TIMEOUT = 36000
 
-
 @module.rule('^(</?3)\s+([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})\s*$')
 @module.intent('ACTION')
 @module.require_chanmsg("You may only modify someone's social credits in a channel.")
 def heart_cmd(bot, trigger):
-    luv_h8(bot, trigger, trigger.group(2), 'h8' if '/' in trigger.group(1) else 'luv')
+    luv_h8(bot, trigger, trigger.group(2), 'down' if '/' in trigger.group(1) else 'up')
 
 
 @module.rule('.*?(?:([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})(\+{2}|-{2})).*?')
@@ -20,13 +19,13 @@ def karma_cmd(bot, trigger):
                 trigger.group(0)):
         return  # avoid processing commands if people try to be tricky
     for (nick, act) in re.findall('(?:([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})(\+{2}|-{2}))', trigger.raw):
-        if luv_h8(bot, trigger, nick, 'luv' if act == '++' else 'h8', warn_nonexistent=False):
+        if luv_h8(bot, trigger, nick, 'up' if act == '++' else 'down', warn_nonexistent=False):
             break
 
 
-@module.commands('luv', 'h8')
-@module.example(".luv moop")
-@module.example(".h8 Akundo69")
+@module.commands('up', 'down')
+@module.example(".up moop")
+@module.example(".down Akundo69")
 @module.require_chanmsg("You may only modify someone's social credits in a channel.")
 def luv_h8_cmd(bot, trigger):
     if not trigger.group(3):
@@ -46,10 +45,10 @@ def luv_h8(bot, trigger, target, which, warn_nonexistent=True):
         return False
     if rep_too_soon(bot, trigger.nick):
         return False
-    if which == 'luv':
+    if which == 'up':
         selfreply = "No narcissism allowed!"
         pfx, change = 'in', 1
-    if which == 'h8':
+    if which == 'down':
         selfreply = "Go to 4chan if you really hate yourself!"
         pfx, change = 'de', -1
     if not (pfx and change and selfreply):  # safeguard against leaving something in the above mass-None assignment
@@ -63,7 +62,7 @@ def luv_h8(bot, trigger, target, which, warn_nonexistent=True):
     return True
 
 
-@module.commands('rep')
+@module.commands('rep','credits')
 @module.example(".rep Phixion")
 def show_rep(bot, trigger):
     target = trigger.group(3) or trigger.nick
