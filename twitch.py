@@ -76,7 +76,7 @@ def monitor_streamers(bot):
       
       if streamer_name not in currently_streaming:
         currently_streaming[streamer_name] = streamer_game, {'cooldown': 0, 'starttime': streamer_starttime}
-        results.append("%s just went live playing %s! %s - %s" % (streamer_name,streamer_game,streamer_status,streamer_url))
+        results.append("🕹️ %s just went live playing %s! %s - %s" % (streamer_name,streamer_game,streamer_status,streamer_url))
       
       streaming_names.append(streamer_name)
 
@@ -91,8 +91,8 @@ def monitor_streamers(bot):
       bot.msg(logchannel,'{0} was removed from currently_streaming for reaching a cooldown of {1}'.format(streamer,currently_streaming[streamer][1]['cooldown']))
       del currently_streaming[streamer]
 
-@sopel.module.commands('twitchtv','twitch','tv')
-@sopel.module.example('.twitchtv  or .twitch username')
+@sopel.module.commands('twitch','stream')
+@sopel.module.example('.twitch  or .stream username')
 def streamer_status(bot, trigger):
   streamer_name = trigger.group(2)
   query = streamers if streamer_name is None else streamer_name.split(" ")
@@ -107,7 +107,7 @@ def streamer_status(bot, trigger):
       streamer_status = streamer["channel"]["status"]
       streamer_viewers = streamer["viewers"]
     
-      results.append("%s is playing %s %s - %s - %s viewer%s" % (streamer_name, 
+      results.append("🕹️ %s is playing %s %s - %s - %s viewer%s" % (streamer_name, 
                                                            streamer_game, 
                                                            streamer_url,
                                                            streamer_status, 
@@ -116,7 +116,7 @@ def streamer_status(bot, trigger):
   if results:
     bot.say(", ".join(results))
   else:
-    bot.say("Nobody is currently streaming.")
+    bot.say("🕹️ nobody is currently streaming.")
 
 @sopel.module.rule('(?!.*\/v\/).*https?:\/\/(?:www\.)?twitch.tv\/(.*?)\/?(?:(?=[\s])|$)')
 def twitchirc(bot, trigger, match = None):
@@ -132,7 +132,7 @@ def twitchirc(bot, trigger, match = None):
       streamer_status = streamer["channel"]["status"]
       streamer_viewers = streamer["viewers"]
 
-      results.append("%s is playing %s [%s] - %s viewer%s" % (streamer_name,
+      results.append("🕹️ %s is playing %s [%s] - %s viewer%s" % (streamer_name,
                                                            streamer_game,
                                                            streamer_status,
                                                            streamer_viewers,
@@ -147,3 +147,18 @@ def twitchirc(bot, trigger, match = None):
 def debug(bot, trigger):
     bot.msg(logchannel,"currently_streaming: {}".format(", ".join(currently_streaming)))
 
+@sopel.module.rule('.*(?:https?:\/\/clips\.twitch.tv\/(.*?)\/?(?:(?=[\s])|$))|(?:https?:\/\/(?:www)?\.twitch\.tv\/.*?\/clip\/(.*?)\/?(?:(?=[\s])|$))')
+def twitchclipsirc(bot,trigger, match = None):
+  match = match or trigger
+  slug = match.group(1) or match.group(2)
+  clips = requests.get("https://api.twitch.tv/kraken/clips/{}".format(slug),
+  headers={"Client-ID":twitchclientid,"Accept":"application/vnd.twitchtv.v5+json"}).json()
+  name = clips['broadcaster']['display_name']
+  title = clips['title']
+  game = clips['game']
+  views = clips['views']
+  bot.say("🕹️ {} [{}] | {} | {} views".format(title, game, name, views))
+
+@sopel.module.commands('debugtv')
+def debug(bot, trigger):
+    bot.msg(logchannel,"currently_streaming: {}".format(", ".join(currently_streaming)))
