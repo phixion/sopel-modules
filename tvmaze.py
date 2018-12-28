@@ -57,7 +57,7 @@ def get_next_episode_info(show, output_timezone=pytz.timezone('UTC')):
 def next_ep(bot, trigger):
 	search_for = trigger.group(2)
 	if not trigger.group(2):
-		return bot.say("Enter a TV Show to search for.")
+		return bot.say("🎬 Enter a TV Show to search for.")
 	else:
 		info = get_next_episode_info(''.join(search_for))
-		return bot.say(info)
+		return bot.say("🎬 %s" % info)
