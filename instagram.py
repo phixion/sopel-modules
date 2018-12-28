@@ -72,9 +72,9 @@ def parse_insta_json(json):
 
     # Build bot response
     if ivideo is True:
-        botmessage = "[insta] Video by "
+        botmessage = "[IG] Video by "
     else:
-        botmessage = "[insta] Photo by "
+        botmessage = "[IG] Photo by "
     if ifname is None:
         botmessage += "@%s" % iuser
     else:
