@@ -14,7 +14,7 @@ from pytz import timezone
 
 forecastapi = '' # https://darksky.net/dev
 glocation = '' # https://developers.google.com/maps/documentation/geocoding/get-api-key
-bitlyapi = '' # http://dev.bitly.com/get_started.html  ##using the generic access token and not Oauth2, make sure to create an actual account and not use gmail login, or things get weird on their website
+bitlyapi = '' # http://dev.bitly.com/get_started.html  #using the generic access token and not Oauth2, make sure to create an actual account and not use gmail login, or things get weird on their website
 aqapi = '' #https://www.airnowapi.org/ usa only for now
 
 def geo_lookup(location):
