@@ -1,4 +1,9 @@
 # coding=utf-8
+# Copyright 2008, Sean B. Palmer, inamidst.com
+# Copyright 2012, Elsie Powell, embolalia.com
+# Licensed under the Eiffel Forum License 2.
+# A modification of sopel's weather.py after it was broken by yahoo's requirement for oauth authentication, and with much more features
+# This module requires api keys for darksky.net, google location api, and bitly url shortener api.
 
 from __future__ import unicode_literals, absolute_import, print_function, division
 import requests
@@ -7,36 +12,29 @@ from sopel.module import commands, example, NOLIMIT
 from datetime import datetime
 from pytz import timezone
 
-forecastapi = 'YOUR_API_KEY' #forecast.io API key.
-gurlapi = 'YOUR_API_KEY' #google url shortner api key
+forecastapi = '' # https://darksky.net/dev
+glocation = '' # https://developers.google.com/maps/documentation/geocoding/get-api-key
+bitlyapi = '' # http://dev.bitly.com/get_started.html  ##using the generic access token and not Oauth2, make sure to create an actual account and not use gmail login, or things get weird on their website
+aqapi = '' #https://www.airnowapi.org/ usa only for now
+
+def geo_lookup(location):
+    response = requests.get("https://maps.googleapis.com/maps/api/geocode/json", params={
+            "address": location,
+            "key": glocation
+        }).json()["results"]
+    if response:
+        if "geometry" in response[0]:
+            return response[0]
+        else:
+            return
+    else:
+        return
 
 def get_short_url(gurl):
-    global gurlapi
-    short_url_service = 'https://www.googleapis.com/urlshortener/v1/url?key={0}'.format(gurlapi)
-    payload = {'longUrl': gurl}
-    headers = {'content-type': 'application/json'}
-    r = requests.post(short_url_service, data=json.dumps(payload), headers=headers)
-    return r.json()['id']
-
-def woeid_search(query):
-    """
-    Find the first Where On Earth ID for the given query. Result is the etree
-    node for the result, so that location data can still be retrieved. Returns
-    None if there is no result, or the woeid field is empty.
-    """
-    query = 'q=select * from geo.places where text="%s"&format=json' % query
-    body = requests.get('http://query.yahooapis.com/v1/public/yql?' + query)
-    return body
-
-def reversewoeid_search(query):
-    """
-    Find the first Where On Earth ID for the given query. Result is the etree
-    node for the result, so that location data can still be retrieved. Returns
-    None if there is no result, or the woeid field is empty.
-    """
-    query = 'q=select * from geo.places where woeid="%s"&format=json' % query
-    body = requests.get('http://query.yahooapis.com/v1/public/yql?' + query)
-    return body
+    global bitlyapi
+    short_url_service = 'https://api-ssl.bitly.com/v3/shorten?access_token={}&longUrl={}'.format(bitlyapi,requests.compat.quote_plus(gurl))
+    r = requests.get(short_url_service)
+    return r.json()['data']['url']
 
 def get_temp(forecast):
     try:
@@ -46,53 +44,36 @@ def get_temp(forecast):
         return 'unknown'
     high = round(forecast.json()['daily']['data'][0]['temperatureMax'])
     low = round(forecast.json()['daily']['data'][0]['temperatureMin'])
-    if forecast.json()['flags']['units'] == 'us':
-        if temp == app_temp:
-            return (u'%d\u00B0F (H:%d|L:%d)' % (temp, high, low))
-        else:
-            return (u'%d\u00B0F, (App:%d, H:%d|L:%d)' % (temp, app_temp, high, low))
+    if temp == app_temp:
+        return (u'{0}\u00B0{1} (H:{2}|L:{3})'.format(temp, 'F' if forecast.json()['flags']['units']=='us' else 'C', high, low))
     else:
-        if temp == app_temp:
-            return (u'%d\u00B0C (H:%d|L:%d)' % (temp, high, low))
-        else:
-            return (u'%d\u00B0C, (App:%d, H:%d|L:%d)' % (temp, app_temp, high, low))
+        return (u'{0}\u00B0{1}, (App:{2}, H:{3}|L:{4})'.format(temp, 'F' if forecast.json()['flags']['units']=='us' else 'C', app_temp, high, low))
 
-def get_uv(postal):
-    try:
-        uvreq = requests.get("https://iaspub.epa.gov/enviro/efservice/getEnvirofactsUVHOURLY/ZIP/{}/JSON".format(postal)).json()
-    except:
-        return ''
-    now = datetime.now()
-    for i, item in enumerate(uvreq):
-        dt = datetime.strptime(item['DATE_TIME'],'%b/%d/%Y %I %p')
-        if dt > now:
-            uvindex = uvreq[i-1]['UV_VALUE']
-            break
-    if 'uvindex' not in vars():
-        return  
-    if uvreq:
-        if uvindex <3:
+def get_uv(forecast):
+    currentuv = forecast.json()['currently']['uvIndex']
+    maxuv = forecast.json()['daily']['data'][0]['uvIndex']
+    if currentuv or currentuv == 0:
+        if currentuv <3:
             color = "\x0303"
-        elif (uvindex >=3) and (uvindex < 6):
+        elif (currentuv >=3) and (currentuv < 6):
             color = "\x0308"
-        elif (uvindex >=6) and (uvindex < 8):
+        elif (currentuv >=6) and (currentuv < 8):
             color = "\x0307"
-        elif (uvindex >=8) and (uvindex < 11):
+        elif (currentuv >=8) and (currentuv < 11):
             color = "\x0304"
         else:
             color = "\x0306"
-        max2 = max(uvreq,key=lambda uvreq: uvreq['UV_VALUE'])['UV_VALUE']
-        if max2 <3:
+        if maxuv <3:
             maxcolor = "\x0303"
-        elif (max2 >=3) and (max2 < 6):
+        elif (maxuv >=3) and (maxuv < 6):
             maxcolor = "\x0308"
-        elif (max2 >=6) and (max2 < 8):
+        elif (maxuv >=6) and (maxuv < 8):
             maxcolor = "\x0307"
-        elif (max2 >=8) and (max2 < 11):
+        elif (maxuv >=8) and (maxuv < 11):
             maxcolor = "\x0304"
         else:
             maxcolor = "\x0306"
-        return ", UV:{}{}\x0F|{}{}\x0F".format(color,uvindex,maxcolor,max2)
+        return ", UV:{}{}\x0F|{}{}\x0F".format(color,currentuv,maxcolor,maxuv)
     else:
         return ''
 
@@ -172,11 +153,14 @@ def get_wind(forecast):
 def get_alert(forecast):
     try:
         fullalerts = []
+        uris = []
         if forecast.json()['alerts'][0]:
             for alerts in forecast.json()['alerts']:
-                title = alerts['title']
-                alert = get_short_url(alerts['uri'])
-                fullalerts.append("{} {}".format(title, alert))
+                if alerts['uri'] not in uris:
+                    title = alerts['title']
+                    uris.append(alerts['uri'])
+                    alert = get_short_url(alerts['uri'])
+                    fullalerts.append("{} {}".format(title, alert))
             return ' | Alert: {}'.format(", ".join(fullalerts))
         else:
             return ''
@@ -185,74 +169,32 @@ def get_alert(forecast):
 
 def get_forecast(bot,trigger,location=None):
     global forecastapi
-    forecast,woeid,body,first_result,alert,result,postal,error = '','','','','','','',''
+    forecast,wloc,body,first_result,alert,result,error = '','','','','','',''
     if not location:
-        woeid = bot.db.get_nick_value(trigger.nick, 'woeid')
-        if not woeid:
-            bot.msg(trigger.sender, "I don't know where you live. " +
-                           'Give me a location, like .weather London, or tell me where you live by saying .setlocation London, for example.')
-            error = 'yes'
-            return location, forecast, postal, error
-        body = reversewoeid_search(woeid)
-        result = body.json()['query']['results']['place']
-        longlat = result['centroid']['latitude']+","+result['centroid']['longitude']
+      wloc = bot.db.get_nick_value(trigger.nick, 'wloc')
+      if not wloc:
+        bot.msg(trigger.sender, "I don't know where you live.  Give me a location, like .weather London, or tell me where you live by saying .setlocation London, for example.")
+        error = 'yes'
+        return location, forecast, error
+      geo_object = geo_lookup(wloc)
+      geo_loc = geo_object["geometry"]["location"]
+      longlat = "{0},{1}".format(geo_loc["lat"], geo_loc["lng"])
     else:
-        location = location.strip()
-        longlat = None
-        woeid = bot.db.get_nick_value(location, 'woeid')
-        if woeid is None:
-            first_result = woeid_search(location)
-            result = first_result.json()['query']['results']['place']
-            if type(result) is list:
-                woeid = 'filler'
-                longlat = result[0]['centroid']['latitude']+","+result[0]['centroid']['longitude']
-            else:
-                woeid = 'filler'
-                longlat = result['centroid']['latitude']+","+result['centroid']['longitude']
-    if not woeid:
+      geo_object = geo_lookup(location)
+      if not geo_object:
         bot.reply("I don't know where that is.")
         error = 'yes'
-        return location,forecast, postal, error
-    forecast = requests.get('https://api.darksky.net/forecast/{0}/{1}?units=auto'.format(forecastapi,longlat))
-    if body:
-        result = body.json()['query']['results']['place']
-        if result['locality1']:
-            location = result['locality1']['content'] + ", " + (result['admin1']['code'].split("-")[-1] if result['admin1']['code'] != '' else result['country']['content'])
-        else:
-            location = result['admin2']['content'] + ", " + (result['admin1']['code'].split("-")[-1] if result['admin1']['code'] != '' else result['country']['content'])
-        if result['country']['content'] == 'United States':
-            postal = result['postal']['content'] if result.get('postal') else None
-        else:
-            postal = None
-    else:
-        result = first_result.json()['query']['results']['place']
-        if type(result) is list:
-            if result[0]['locality1']:
-                location = result[0]['locality1']['content'] + ", " + (result[0]['admin1']['code'].split("-")[-1] if result[0]['admin1']['code'] != '' else result[0]['country']['content'])
-            elif result[0]['admin2']:
-                location = result[0]['admin2']['content'] + ", " + (result[0]['admin1']['code'].split("-")[-1] if result[0]['admin1']['code'] != '' else result[0]['country']['content'])
-            elif result[0]['admin1']:
-                location = result[0]['admin1']['content'] + ", " + result[0]['country']['content']
-            else:
-                location = result[0]['name']
-            if result[0]['country']['content'] == 'United States':
-                postal = result[0]['postal']['content'] if result[0].get('postal') else None
-            else:
-                postal = None
-        else:
-            if result['locality1']:
-                location = result['locality1']['content'] + ", " + (result['admin1']['code'].split("-")[-1] if result['admin1']['code'] != '' else result['country']['content'])
-            elif result['admin2']:
-                location = result['admin2']['content'] + ", " + (result['admin1']['code'].split("-")[-1] if result['admin1']['code'] != '' else result['country']['content'])
-            elif result['admin1']:
-                location = result['admin1']['content'] + ", " + result['country']['content']
-            else:
-                location = result['name']
-            if result['country']['content'] == 'United States':
-                postal = result['postal']['content'] if result.get('postal') else None
-            else:
-                postal = None
-    return location, forecast, postal, error
+        return location, forecast, error
+      geo_loc = geo_object["geometry"]["location"]
+      longlat = "{0},{1}".format(geo_loc["lat"], geo_loc["lng"])
+    units = bot.db.get_nick_value(trigger.nick, 'units')
+    if not units:
+      units = 'auto'
+    forecast = requests.get('https://api.darksky.net/forecast/{0}/{1}?units={2}'.format(forecastapi,longlat,units))
+    location = geo_object["formatted_address"]
+    if location[-3:] == 'USA':
+      location =', '.join([b['short_name'] for b in geo_object['address_components'] if b['types'][0] == 'locality' or b['types'][0] == 'administrative_area_level_1'])
+    return location, forecast, error
 
 def get_sun(tz, forecast):
     if 'sunriseTime' not in forecast:
@@ -290,9 +232,9 @@ def get_moon(forecast):
 def weather7(bot,trigger):
     location = trigger.group(2)
     if not location:
-        location, forecast, postal, error = get_forecast(bot,trigger)
+        location, forecast, error = get_forecast(bot,trigger)
     else:
-        location, forecast, postal, error = get_forecast(bot,trigger,location)
+        location, forecast, error = get_forecast(bot,trigger,location)
     if error:
         return
     summary = forecast.json()['daily']['summary']
@@ -303,19 +245,19 @@ def weather7(bot,trigger):
         maxtemp = round(day['temperatureMax'])
         mintemp = round(day['temperatureMin'])
         sevendays.append("{0}:({1}|{2})".format(wkday,mintemp,maxtemp))
-    del sevendays[0]
+    #del sevendays[0]
     sevendays = ", ".join(sevendays)
     bot.say("{0}: [{1}] {2}".format(location, summary, str(sevendays)))
 
-@commands('tmp', 'temp')
-@example('.temp London')
+@commands('weather', 'wea')
+@example('.weather London')
 def weather(bot, trigger):
     """.weather location - Show the weather at the given location."""
     location = trigger.group(2)
     if not location:
-        location, forecast, postal, error = get_forecast(bot,trigger)
+        location, forecast, error = get_forecast(bot,trigger)
     else:
-        location, forecast, postal, error = get_forecast(bot,trigger,location)
+        location, forecast, error = get_forecast(bot,trigger,location)
     if error:
         return
     summary = forecast.json()['currently']['summary']
@@ -323,14 +265,14 @@ def weather(bot, trigger):
     alert = get_alert(forecast)
     bot.say(u'%s: %s, %s %s' % (location, summary, temp,  alert))
 
-@commands('wea','weather', 'wf')
+@commands('weatherfull','fullweather', 'wf')
 def weatherfull(bot, trigger):
     """.weather location - Show the weather at the given location."""
     location = trigger.group(2)
     if not location:
-        location, forecast, postal, error = get_forecast(bot,trigger)
+        location, forecast, error = get_forecast(bot,trigger)
     else:
-        location, forecast, postal, error = get_forecast(bot,trigger,location)
+        location, forecast, error = get_forecast(bot,trigger,location)
     if error:
         return
     summary = forecast.json()['currently']['summary']
@@ -338,7 +280,7 @@ def weatherfull(bot, trigger):
     humidity = forecast.json()['currently']['humidity']
     wind = get_wind(forecast)
     alert = get_alert(forecast)
-    uv = get_uv(postal) if postal else ''
+    uv = get_uv(forecast)
     sun = get_sun(forecast.json()['timezone'], forecast.json()['daily']['data'][0])
     bot.say(u'%s: %s, %s, Humidity: %s%%, %s%s%s%s' % (location, summary, temp, round(humidity*100), wind, sun, uv, alert))
 
@@ -346,45 +288,59 @@ def weatherfull(bot, trigger):
 def moon(bot,trigger):
     location = trigger.group(2)
     if not location:
-        location, forecast, postal, error = get_forecast(bot,trigger)
+        location, forecast, error = get_forecast(bot,trigger)
     else:
-        location, forecast, postal, error = get_forecast(bot,trigger,location)
+        location, forecast, error = get_forecast(bot,trigger,location)
     if error:
         return
     moon = get_moon(forecast.json()['daily']['data'][0])[1:]
     bot.say(moon)
-    
 
-@commands('setlocation', 'setwoeid')
-@example('.setlocation Columbus, OH')
-def update_woeid(bot, trigger):
+@commands('setlocation')
+@example('.setlocation Munich, DE')
+def update_location(bot, trigger):
     """Set your default weather location."""
     if not trigger.group(2):
         bot.reply('Give me a location, like "Washington, DC" or "London".')
         return NOLIMIT
-    first_result = woeid_search(trigger.group(2))
-    if first_result is None:
+    geo_object = geo_lookup(trigger.group(2))
+    if geo_object is None:
         return bot.reply("I don't know where that is.")
-    if type(first_result.json()['query']['results']['place']) is list:
-        found = first_result.json()['query']['results']['place'][0]
+    bot.db.set_nick_value(trigger.nick, 'wloc', geo_object['formatted_address'])
+    bot.reply('I now have you at {}'.format(geo_object["formatted_address"]))
+
+@commands('setunits', 'setunit')
+def update_unit(bot,trigger):
+    if not trigger.group(2):
+        return bot.reply('Choose a unit like "imperial" or "metric".')
+    unit_dict = {'imperial':'us','metric':'si','auto':'auto'}
+    if trigger.group(2).lower() in unit_dict:
+        bot.db.set_nick_value(trigger.nick, 'units', unit_dict[trigger.group(2).lower()])
+        bot.reply('Unit Set.')
     else:
-        found = first_result.json()['query']['results']['place']
-    woeid = found['woeid']
-    bot.db.set_nick_value(trigger.nick, 'woeid', woeid)
-    neighborhood = found['locality2'] or ''
-    if neighborhood:
-        neighborhood = neighborhood['#text'] + ', '
-    city = found['locality1'] or ''
-    # This is to catch cases like 'Bawlf, Alberta' where the location is
-    # thought to be a "LocalAdmin" rather than a "Town"
-    if city:
-        city = city['content']
-    else:
-        city = found['name']
-    state = found['admin1']['content'] or ''
-    country = found['country']['content'] or ''
-    uzip = found['postal'] or ''
-    if uzip:
-        uzip = uzip['content']
-    bot.reply('I now have you at WOEID %s (%s%s, %s, %s %s)' %
-              (woeid, neighborhood, city, state, country, uzip))
+        return bot.reply('Use the following values: imperial, metric, auto')
+
+@commands('aq', 'aqi', 'air')
+def airquality(bot, trigger):
+  global aqapi
+  location = trigger.group(2)
+  if not location:
+    wloc = bot.db.get_nick_value(trigger.nick, 'wloc')
+    if not wloc:
+      return bot.msg(trigger.sender, "I don't know where you live.  Give me a location, like .aq London, or tell me where you live by saying .setlocation London, for example.")
+    geo_object = geo_lookup(wloc)
+    geo_loc = geo_object["geometry"]["location"]
+    latlong = "&latitude={}&longitude={}".format(geo_loc["lat"],geo_loc["lng"])
+  else:
+    geo_object = geo_lookup(location)
+    if not geo_object:
+      return bot.reply("I don't know what that is.")
+    geo_loc = geo_object["geometry"]["location"]
+    latlong = "&latitude={}&longitude={}".format(geo_loc["lat"],geo_loc["lng"])
+  location = geo_object["formatted_address"]
+  results = requests.get("http://www.airnowapi.org/aq/observation/latLong/current/?format=application/json{}&distance=100&API_KEY={}".format(latlong, aqapi)).json()
+  if not results:
+    return bot.say("No monitoring stations with 100 miles.")
+  ozone = "{} [{}]".format(results[0]['AQI'], results[0]['Category']['Name'])
+  pm = "{} [{}]".format(results[1]['AQI'], results[1]['Category']['Name'])
+  return bot.say("{} Air Quality: O3 (ozone): {} | PM2.5 (particles): {}".format(location, ozone, pm))
