@@ -7,7 +7,7 @@ TIMEOUT = 36000
 
 @module.rule('^(</?3)\s+([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32})\s*$')
 @module.intent('ACTION')
-@module.require_chanmsg("You may only modify someone's social credits in a channel.")
+@module.require_chanmsg("🀄 you may only modify someone's social credits in a channel.")
 def heart_cmd(bot, trigger):
     luv_h8(bot, trigger, trigger.group(2), 'down' if '/' in trigger.group(1) else 'up')
 
@@ -29,7 +29,7 @@ def karma_cmd(bot, trigger):
 @module.require_chanmsg("You may only modify someone's social credits in a channel.")
 def luv_h8_cmd(bot, trigger):
     if not trigger.group(3):
-        bot.reply("No user specified.")
+        bot.reply("🀄 no user specified.")
         return
     target = Identifier(trigger.group(3))
     luv_h8(bot, trigger, target, trigger.group(1))
@@ -41,24 +41,24 @@ def luv_h8(bot, trigger, target, which, warn_nonexistent=True):
     pfx = change = selfreply = None  # keep PyCharm & other linters happy
     if not target:
         if warn_nonexistent:
-            bot.reply("You can only %s someone who is here." % which)
+            bot.reply("🀄 you can only %s someone who is here." % which)
         return False
     if rep_too_soon(bot, trigger.nick):
         return False
     if which == 'up':
-        selfreply = "No narcissism allowed!"
+        selfreply = "🀄 no narcissism allowed!"
         pfx, change = 'in', 1
     if which == 'down':
-        selfreply = "Go to 4chan if you really hate yourself!"
+        selfreply = "🀄 go elsewhere if you hate yourself!"
         pfx, change = 'de', -1
     if not (pfx and change and selfreply):  # safeguard against leaving something in the above mass-None assignment
-        bot.say("Logic error! Please report this to %s." % bot.config.core.owner)
+        bot.say("🀄 Logic error! Please report this to %s." % bot.config.core.owner)
         return
     if is_self(bot, trigger.nick, target):
         bot.reply(selfreply)
         return False
     rep = mod_rep(bot, trigger.nick, target, change)
-    bot.say("%s has %screased %s's social credits to %d" % (trigger.nick, pfx, target, rep))
+    bot.say("🀄 %s has %screased %s's social credits to %d" % (trigger.nick, pfx, target, rep))
     return True
 
 
@@ -68,9 +68,9 @@ def show_rep(bot, trigger):
     target = trigger.group(3) or trigger.nick
     rep = get_rep(bot, target)
     if rep is None:
-        bot.say("%s has no social credits yet." % target)
+        bot.say("🀄 %s has no social credits yet." % target)
         return
-    bot.say("%s's current social credits: %d." % (target, rep))
+    bot.say("🀄 %s's current social credits: %d." % (target, rep))
 
 
 # helpers
@@ -107,7 +107,7 @@ def rep_used_since(bot, nick):
 def rep_too_soon(bot, nick):
     since = rep_used_since(bot, nick)
     if since < TIMEOUT:
-        bot.notice("You must wait %d more seconds before changing someone's social credits again." % (TIMEOUT - since), nick)
+        bot.notice("🀄 you must wait %d more seconds before changing someone's social credits again." % (TIMEOUT - since), nick)
         return True
     else:
         return False
