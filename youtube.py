@@ -68,7 +68,7 @@ def search(bot, trigger):
     ).execute()
     results = results.get('items')
     if not results:
-        bot.say("I couldn't find any YouTube videos for your query.")
+        bot.say("📺 I couldn't find any YouTube videos for your query.")
         return
 
     _say_result(bot, trigger, results[0]['id']['videoId'])
@@ -93,7 +93,7 @@ def _say_result(bot, trigger, id_, include_link=True):
     result = result[0]
 
     message = (
-        '[YouTube] '
+        '📺 '
         '{title} | Uploader: {uploader} | '
         'Length: {length} | Views: {views:,}'
     )
