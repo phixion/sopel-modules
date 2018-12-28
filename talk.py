@@ -1,16 +1,17 @@
+# coding=utf-8
 import datetime
 import redis
 import markovify
 import sopel
 
 # Change this if you want, it will increase the DB size eventually.
-timeout = 60 * 60 * 24 * 30 # 60s * 60m * 24h * 30d = 1 month
+timeout = 60 * 60 * 24 * 30 * 6 # 60s * 60m * 24h * 30d * 6 = 6 months
 ignore = ["http","https"]
 
 MAX_OVERLAP_RATIO = 0.5
 MAX_OVERLAP_TOTAL = 10
 
-db = redis.Redis(db=0)
+db = redis.Redis(db=2)
 
 class TalkBotText(markovify.Text):
   def test_sentence_input(self, sentence):
@@ -30,7 +31,6 @@ class TalkBotText(markovify.Text):
 
     return markovify.split_into_sentences(text)
 
-
 @sopel.module.rule(r'.*$')
 def talkbot(bot, trigger):
   for ignored_item in ignore:
@@ -46,15 +46,16 @@ def talkbot(bot, trigger):
   db.sadd(key, str(trigger))
   db.expire(key, timeout)
 
-
 @sopel.module.commands('talk')
 def talkbot_talk(bot, trigger):
   nick = trigger.group(2)
   if nick:
-    pattern = "*:%s" % nick.lower()
+    p = "*:%s" % nick.lower()
+    pattern = p.strip()
     min_lines = 200
   else:
-    pattern = "*"
+    p = "*"
+    pattern = p.strip()
     min_lines = 100
 
   results = []
@@ -62,10 +63,11 @@ def talkbot_talk(bot, trigger):
     results.extend(db.smembers(k))
 
   if len(results) < min_lines:
-    bot.say("Sorry %s, there is not enough data." % trigger.nick)
+    bot.say("there's not enough data.")
   else:
     model = TalkBotText("\n".join([r.decode('utf8') for r in results]))
     resp = model.make_short_sentence(500,
-      max_overlap_total=MAX_OVERLAP_TOTAL, 
+      max_overlap_total=MAX_OVERLAP_TOTAL,
       max_overlap_ratio=MAX_OVERLAP_RATIO)
     bot.say(resp)
+
