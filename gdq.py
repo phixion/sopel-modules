@@ -85,25 +85,24 @@ def gdq(bot, trigger):
         (game, runner, console, comment, eta, nextgame, nextrunner, nexteta, nextconsole, nextcomment) = getinfo(run,now)
     except:
         if not delta:
-            return bot.say("Next GDQ: {}".format(textdate))
-        return bot.say("GDQ is {0} days away ({1})".format(delta.days, textdate))
+            return bot.say("🎮 next GDQ: {}".format(textdate))
+        return bot.say("🎮 GDQ is {0} days away ({1})".format(delta.days, textdate))
     if not nextgame:
         if not delta:
-            return bot.say("Next GDQ: {}".format(textdate))
-        return bot.say("GDQ is {0} days away ({1})".format(delta.days,textdate))
+            return bot.say("🎮 next GDQ: {}".format(textdate))
+        return bot.say("🎮 GDQ is {0} days away ({1})".format(delta.days,textdate))
     if now < gdqstart:
         tts = gdqstart - now
         if tts.days <= 2:
-            return bot.say("GDQ is {0}H{1}M away.  First game: {2} by {3} ETA: {4} Comment: {5} | https://gamesdonequick.com/schedule".format(int(tts.total_seconds() // 3600),int((tts.total_seconds() % 3600) // 60), nextgame, nextrunner, nexteta, nextcomment))
+            return bot.say("🎮 GDQ is only {0}hrs {1}mins away. The first game will be: {2} by {3} 🕙 ETA: {4} 💬 comment: {5} | https://gamesdonequick.com/schedule".format(int(tts.total_seconds() // 3600),int((tts.total_seconds() % 3600) // 60), nextgame, nextrunner, nexteta, nextcomment))
         else:
-            return bot.say("GDQ is {0} days away ({1}) | https://gamesdonequick.com/schedule | I will have more details for you once we get close.".format(tts.days,gdqstart.strftime('%d.%m.%Y')))
-
+            return bot.say("🎮 GDQ is {0} days away ({1}) | https://gamesdonequick.com/schedule | I will have more details for you once we get close.".format(tts.days,gdqstart.strftime('%d.%m.%Y')))
     if nextgame == 'done':
-        return bot.say("GDQ is {0} days away ({1} [estimated])".format(delta.days,textdate))
+        return bot.say("🎮 GDQ is {0} days away ({1} [estimated])".format(delta.days,textdate))
     if game:
         if comment:
-            bot.say("Current Game: {0} by {1} ETA: {2} Comment: {3} | Next Game: {4} by {5} | https://www.twitch.tv/gamesdonequick | https://gamesdonequick.com/schedule".format(game, runner, eta, comment, nextgame, nextrunner))
+            bot.say("🎮 current game: {0} by {1} 🕙 ETA: {2} 💬 comment: {3} | 🔜 next game: {4} by {5} | https://www.twitch.tv/gamesdonequick | https://gamesdonequick.com/schedule".format(game, runner, eta, comment, nextgame, nextrunner))
         else:
-            bot.say("Current Game: {0} by {1} ETA: {2} | Next Game: {3} by {4} | https://www.twitch.tv/gamesdonequick | https://gamesdonequick.com/schedule".format(game, runner, eta, nextgame, nextrunner))
+            bot.say("🎮 current game: {0} by {1} 🕙 ETA: {2} | 🔜 next game: {3} by {4} | https://www.twitch.tv/gamesdonequick | https://gamesdonequick.com/schedule".format(game, runner, eta, nextgame, nextrunner))
     else:
-        bot.say("Current Game: setup?? | Next Game {0} by {1} | https://www.twitch.tv/gamesdonequick | https://gamesdonequick.com/schedule".format(nextgame, nextrunner))
+        bot.say("🎮 current game: 🚧 setting things up for the next runners 🚧 | 🔜 next game {0} by {1} | https://www.twitch.tv/gamesdonequick | https://gamesdonequick.com/schedule".format(nextgame, nextrunner))
