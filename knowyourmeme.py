@@ -4,7 +4,7 @@ import sopel
 
 @sopel.module.commands('kym','meme')
 def kym(bot, trigger):
-    x = requests.get("http://knowyourmeme.com/search?q={}".format(trigger.group(2)),headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36'})
+    x = requests.get("https://knowyourmeme.com/search?q={}".format(trigger.group(2)),headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36'})
     bs = BeautifulSoup(x.content,'html.parser')
     try:
         url2 = bs.findAll("tbody")[0].tr.td.a['href']

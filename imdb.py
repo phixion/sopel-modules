@@ -11,8 +11,8 @@ LOGGER = get_logger(__name__)
 yearfmt = re.compile('\((\d{4})\)')
 
 @sopel.module.commands('movie', 'imdb')
-@sopel.module.example('.movie ThisTitleDoesNotExist', '[MOVIE] Movie not found!')
-@sopel.module.example('.movie Citizen Kane', '[MOVIE] Title: Citizen Kane | Year: 1941 | Rating: 8.4 | Genre: Drama, Mystery | IMDB Link: http://imdb.com/title/tt0033467')
+@sopel.module.example('.movie ThisTitleDoesNotExist', '🎥 Movie not found!')
+@sopel.module.example('.movie Citizen Kane', '🎥 Title: Citizen Kane | Year: 1941 | Rating: 8.4 | Genre: Drama, Mystery | IMDB Link: https://imdb.com/title/tt0033467')
 def movie(bot, trigger):
     if not trigger.group(2):
         return
@@ -36,20 +36,20 @@ def run_omdb_query(params, verify_ssl, add_url=True):
                         verify=verify_ssl).json()
     if data['Response'] == 'False':
         if 'Error' in data:
-            message = '[MOVIE] %s' % data['Error']
+            message = '🎥 %s' % data['Error']
         else:
             LOGGER.warning(
                 'Got an error from the OMDb api, search phrase was %s; data was %s',
                 word, str(data))
-            message = '[MOVIE] Got an error from OMDbapi'
+            message = '🎥 Got an error from OMDbapi'
     else:
-        message = '[MOVIE] Title: ' + data['Title'] + \
+        message = '🎥 Title: ' + data['Title'] + \
                   ' | Year: ' + data['Year'] + \
                   ' | Rating: ' + data['imdbRating'] + \
                   ' | Genre: ' + data['Genre'] + \
                   ' | Plot: {}'
         if add_url:
-            message += ' | IMDB Link: http://imdb.com/title/' + data['imdbID']
+            message += ' | IMDB Link: https://imdb.com/title/' + data['imdbID']
 
         plot = data['Plot']
         if len(message.format(plot)) > 300:
