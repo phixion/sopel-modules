@@ -39,7 +39,7 @@ def vimeo_by_url(bot, trigger, found_match=None):
         output += u" | Views : %s" % (str(resp[0]['stats_number_of_plays']))
     #if 'stats_number_of_comments' in resp[0]:
     #    output += u" | Comments: %s" % (str(resp[0]['stats_number_of_comments']))
-    #if 'stats_number_of_likes' in resp[0]:
-    #    output += u" | Likes: %s" % (str(resp[0]['stats_number_of_likes']))
+    if 'stats_number_of_likes' in resp[0]:
+        output += u" | Likes: %s" % (str(resp[0]['stats_number_of_likes']))
 
     bot.say(output)
