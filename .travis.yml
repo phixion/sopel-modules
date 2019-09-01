@@ -19,7 +19,7 @@ before_script:
   - sudo systemctl daemon-reload
   - sudo systemctl enable sopel@sopel.service
   - sudo systemctl start sopel@sopel.service
-script: sudo systemctl stop sopel@sopel.service && sleep 60 && sudo systemctl disable sopel@sopel.service
+script: sleep 60 && sudo systemctl stop sopel@sopel.service && sleep 60 && sudo systemctl disable sopel@sopel.service
 after_script: 
   - cat ~/.sopel/logs/*.log
 dist: bionic
