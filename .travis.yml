@@ -15,7 +15,7 @@ before_script:
   - ln -s $(pwd)/doc/sopel.cfg ~/.sopel/sopel.cfg
   - sed -i 's/^host =.*/host = 127.0.0.1/g' ~/.sopel/sopel.cfg
   - sed -i 's/redis_host =.*/redis_host = 127.0.0.1/g' ~/.sopel/sopel.cfg
-  - sudo mkdir /usr/lib/systemd/system/ 
+  - sudo mkdir -p /usr/lib/systemd/system/ 
   - sudo ln -s $(pwd)/doc/sopel@.service /usr/lib/systemd/system/
   - sudo systemctl daemon-reload
 script: sudo systemctl stop sopel@sopel.service && sleep 60 && sudo systemctl disable sopel@sopel.service
