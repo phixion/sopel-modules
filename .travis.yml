@@ -1,6 +1,6 @@
 language: python
 python:
-  - '3.5'
+  - '3.6'
 services:
   - redis-server
   - sopel@sopel.service
@@ -21,4 +21,4 @@ before_script:
 script: sudo systemctl stop sopel@sopel.service && sleep 60 && sudo systemctl disable sopel@sopel.service
 after_script: 
   - cat ~/.sopel/logs/*.log
-dist: trusty
+dist: bionic
