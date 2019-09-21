@@ -82,7 +82,7 @@ def monitor_streamers(bot):
     for streamer in twitch_gen:
       if streamer["name"] not in currently_streaming:
         currently_streaming[streamer["name"]] = streamer["game"], {'cooldown': 0, 'starttime': streamer["starttime"]}
-        results.append("%s just went live playing %s! [%s] (%s - %s viewer%s)" % (streamer["name"],
+        results.append("📺 %s just went live playing %s! [%s] ( %s - %s viewer%s )" % (streamer["name"],
                                                                                   streamer["game"],
                                                                                   streamer["status"],
                                                                                   streamer["url"],
@@ -116,7 +116,7 @@ def streamer_status(bot, trigger):
   if streaming.get("streams"):
     twitch_gen = twitch_generator(streaming)
     for streamer in twitch_gen:
-      results.append("%s is playing %s [%s] (%s - %s viewer%s)" % (streamer["name"],
+      results.append("📺 %s is playing %s [%s] ( %s - %s viewer%s )" % (streamer["name"],
                                                                    streamer["game"],
                                                                    streamer["status"],
                                                                    streamer["url"],
@@ -140,7 +140,7 @@ def twitchirc(bot, trigger, match = None):
   if streaming.get("streams"):
     twitch_gen = twitch_generator(streaming)
     for streamer in twitch_gen:
-      results.append("%s is playing %s [%s] (%s - %s viewer%s)" % (streamer["name"],
+      results.append("📺 %s is playing %s [%s] ( %s - %s viewer%s )" % (streamer["name"],
                                                                    streamer["game"],
                                                                    streamer["status"],
                                                                    streamer["url"],
@@ -166,7 +166,7 @@ def mixerirc(bot, trigger, match = None):
     streamer_status = streaming["name"]
     streamer_viewers = streaming["viewersCurrent"]
 
-  results.append("%s is playing %s [%s] - %s viewer%s" % (streamer_name,
+  results.append("📺 %s is playing %s [%s] - %s viewer%s" % (streamer_name,
                                                          streamer_game,
                                                          streamer_status,
                                                          tsep(streamer_viewers),
