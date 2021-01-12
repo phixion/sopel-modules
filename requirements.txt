@@ -1,4 +1,4 @@
-sopel>=6.0,<7
+sopel>=6.0,<8
 xmltodict
 pytz
 praw<8.0.0
