@@ -55,7 +55,7 @@ remove 'sopel' if you build from a different source
 * tvmaze.py - looks up a tvshow's airing time and date using tvmaze api
 * rep.py - adds a reputation system (.h8 and .luv)
 * bucket.py - adds remembering quotes and inventory for the bot (requires mysql)
-
+* corona.py - adds https://disease.sh support (requires country_converter, us, requests)
 
 ### Thanks:
 
